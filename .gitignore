@@ -6,6 +6,10 @@
 /.pnp
 .pnp.js
 
+# local var
+/sim-race-controller/frontend/src/.env
+/sim-race-manager/frontend/src/.env
+
 # production
 /sim-race-controller/frontend/build
 /sim-race-manager/frontend/build

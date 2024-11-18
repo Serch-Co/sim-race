@@ -1,0 +1,35 @@
+.price-container{
+	padding: auto;
+}
+
+.box-title{
+    text-shadow: chartreuse;
+}
+
+.box{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.info-box{
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 0 10px;
+}
+
+.input-box{
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 0 10px;
+}
+
+.input-field{
+    margin: 10px;
+    border: 2px solid var(--button-color);
+    border-radius: 8px;
+}
+
+.user-options{
+    display: flex;
+    flex-direction: row-reverse;
+}
