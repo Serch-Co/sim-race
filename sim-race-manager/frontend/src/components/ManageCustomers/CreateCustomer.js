@@ -37,9 +37,7 @@ function CreateCustomer() {
 		age: "",
 		height: "",
 		weight: "",
-		suscriptionType: "Monthly",
-		monthPrice: 10,
-		annualPrice: 35,
+		suscriptionPrice: 35,
 		startDate: {
 			month: "",
 			day: "",
@@ -99,10 +97,10 @@ function CreateCustomer() {
 		{ value: 30, label: 30 },
 		{ value: 31, label: 31 }
 	]
-	const suscriptionOptions = [,
-		{ value: "Monthly", label: "Monthly" },
-		{ value: "Annual", label: "Annual" }
-	]
+	// const suscriptionOptions = [
+	// 	{ value: "Monthly", label: "Monthly" },
+	// 	{ value: "Annual", label: "Annual" }
+	// ]
 
 	const createClicked = () => {
 		const newFormValues = clearEmptyInput()
@@ -187,7 +185,7 @@ function CreateCustomer() {
 	 */
 	function clearEmptyInput(){
 		for (let key in formValues) {
-			if(formValues[key] == ''){
+			if(formValues[key] === ''){
 				formValues[key] = defaultFormValues[key]
 			}
 		}
@@ -330,35 +328,10 @@ function CreateCustomer() {
                     </div>
 
                     <div className="customer-suscription">
-                    <div className="box-title">Suscription</div>
+                    <div className="box-title">Suscription per Year</div>
                         <div className="box">
-                          	<div className="info-box">
-								Type
-								<Select 
-									type="number"
-									className="input-field"
-									options={suscriptionOptions}
-									aria-label="suscriptionType"
-									placeholder="Monthly"
-									onChange={handleSuscriptionChange}
-								/>
-							</div>
 							<div className="info-box">
-								Total Price:
-								<div>
-									{(() => {
-										if (!formValues['suscriptionType']) {
-											return 	<div className="price-container">
-														{annualPrice}
-													</div>
-										}
-										else {
-											return	<div className="price-container">
-														{monthPrice}
-													</div>
-										} 
-									})()}
-								</div>
+								Price: {formValues['suscriptionPrice']}
 							</div>
                         </div>
                     </div>

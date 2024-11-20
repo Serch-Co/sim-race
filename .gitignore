@@ -14,6 +14,10 @@
 /sim-race-controller/frontend/build
 /sim-race-manager/frontend/build
 
+#Env
+/sim-race-controller/frontend/.env
+/sim-race-manager/frontend/.env
+
 # misc
 .DS_Store
 .env.local
