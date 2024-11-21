@@ -229,10 +229,7 @@ function CreateCustomer() {
 	const handleSubmit = (e) => {
 		// Prevent from loading 
 		e.preventDefault();
-		if (formValues['addOns'].length < 1){
-			alert("No addOns specified");
-		}
-		else if (emailError && formValues['email']){
+		if (emailError && formValues['email']){
 			alert('Something wrong with the email')
 		}
 		else{
@@ -327,6 +324,28 @@ function CreateCustomer() {
                         </div>
                     </div>
 
+					<div className="card">
+						<div className="card-header">Add races</div>
+
+						<div className="card-body">
+							{availableAddOns.map((item) => {
+								return (
+							<div key={item.id} className="checkbox-container">
+								<input
+									className="check-list"
+									type="checkbox"
+									id={item.id}
+									name="addOns"
+									value={item.name}
+									onChange={() => handleToggleCompleted(item.id)}
+								/>
+								{item.name}
+							</div>
+							);
+						})}
+						</div>
+					</div>
+
                     <div className="customer-suscription">
                     <div className="box-title">Suscription per Year</div>
                         <div className="box">
@@ -335,6 +354,11 @@ function CreateCustomer() {
 							</div>
                         </div>
                     </div>
+					<div className="box">
+							<div className="info-box">
+								Total Price: {formValues['suscriptionPrice']}
+							</div>
+                        </div>
 					<div className="user-options">
 						<button
 							className="primary-btn"

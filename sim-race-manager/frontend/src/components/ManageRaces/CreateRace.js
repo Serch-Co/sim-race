@@ -36,7 +36,7 @@ function CreateRace() {
 	 */
 	function clearEmptyInput(){
 		for (let key in formValues) {
-			if(formValues[key] == ''){
+			if(formValues[key] === ''){
 				formValues[key] = defaultFormValues[key]
 			}
 		}
@@ -110,8 +110,8 @@ function CreateRace() {
                                     <input
                                         className="input-field" 
                                         type="number"
-                                        aria-label="monthlyPrice"
-                                        placeholder="Monthly Price"
+                                        aria-label="price"
+                                        placeholder="Price"
                                         onChange={handleInputNumChange}
                                     />
                                 </div>

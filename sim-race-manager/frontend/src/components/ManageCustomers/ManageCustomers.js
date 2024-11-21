@@ -19,7 +19,7 @@ function ManageCustomers() {
 
     const fetchCustomers = () => {
         try {
-        const url = "http://127.0.0.1:5000/getCustomers"
+        const url = "http://127.0.0.1:5000/readCustomers"
         fetch(url, { method: "GET" })
             .then((response) => {
             if (!response.ok) {
@@ -50,8 +50,8 @@ function ManageCustomers() {
 
     // Select for sort
     const options = [
-        { value: "firstName", label: "First Name" },
-        { value: "lastName", label: "Last Name" },
+        { value: "first_name", label: "First Name" },
+        { value: "last_name", label: "Last Name" },
         { value: "email", label: "Email" },
         { value: "age", label: "Age" }
     ]

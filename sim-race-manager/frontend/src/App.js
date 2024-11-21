@@ -8,7 +8,8 @@ import Settings from "./pages/Settings"
 import CreateCustomer from "./components/ManageCustomers/CreateCustomer"
 import ManageCustomers from "./components/ManageCustomers/ManageCustomers"
 import CreateRace from "./components/ManageRaces/CreateRace"
-import ManageRaces from "./components/ManageRaces/ManageRaces";
+import ManageRaces from "./components/ManageRaces/ManageRaces"
+import Customer from "./pages/Customer"
 import PageNotFound from "./pages/PageNotFound"
 
 function App() {
@@ -24,10 +25,12 @@ function App() {
 			<BrowserRouter>
 				<Header />
 				<Routes>
+					<Route path="/" element={Home} />
 					<Route path="/Home" element={Home} />
 					<Route path="/Settings" element={Settings} />
 					<Route path="/CreateCustomer" element={CreateCustomer} />
 					<Route path="/ManageCustomers" element={ManageCustomers} />
+					<Route path="/Customer" element={Customer} />
 					<Route path="/CreateRace" element={CreateRace} />
 					<Route path="/ManageRaces" element={ManageRaces} />
 					<Route path="/*" element={PageNotFound} />

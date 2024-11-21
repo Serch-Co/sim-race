@@ -1,0 +1,7 @@
+
+.info-field{
+    margin: 10px;
+    padding: 8px 15px 8px 15px;
+    border: 2px solid var(--button-color);
+    border-radius: 8px;
+}

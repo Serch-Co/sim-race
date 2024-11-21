@@ -1,0 +1,132 @@
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
+import os
+
+url = os.getenv("MONGO_DB_URL")
+client = MongoClient(url, server_api=ServerApi('1'))
+db = client.sim_race_db
+
+class Database:
+    def __init__(self):
+        self.db = db
+
+
+
+    
+    ###############
+    ## CUSTOMERS ##
+    ###############
+
+    # Create customer using
+    def create_customer(self, customer):
+        # Send customer to add it to the list
+        self.add_to_customer_list(customer)
+        return customer['id']
+
+    # Read customer using customer_id
+    def read_customer(self, customer_id):
+        for customer in self.read_customer_list():
+            if customer['id'] == customer_id:
+                return customer
+            
+    # Update customer in the customer_list fo the db
+    def update_customer(self, updates, customer_id):
+        customers = self.read_customer_list()
+        new_customers_list = []
+        for customer in customers:
+            if customer_id == customer["id"]:
+                new_customers_list.append(updates)
+            else: 
+                new_customers_list.append(customer)
+        self.update_customer_list(new_customers_list)
+
+    # Delete customer using customer_id
+    def delete_customer(self, customer_id):
+        i = 0
+        # Loop through customers to find the customer
+        for customer in self.read_customer_list():
+            if customer['id'] == customer_id:
+                # Remove customer from the list inside the project
+                self.remove_from_customer_list(i)
+            i += 1
+
+    ###################
+    ## CUSTOMER LIST ##
+    ###################
+
+    # Read list of customers
+    def read_customer_list(self):
+        sim_info = self.read_customers()
+        # Check if there exists a list of customers
+        if 'customers' in sim_info[0].keys():
+            return sim_info[0]['customers']
+        # Return an empty list otherwise
+        return []
+
+    # Read customers by returning a list of customers
+    def read_customers(self):
+        customers = self.db.sim_info.find()
+        customers_list = []
+        for customer in customers:
+            customer["_id"] = str(customer["_id"])
+            customers_list += [customer]
+        return customers_list
+
+    # Add customer to the list
+    def add_to_customer_list(self, customer):
+        old_customer_list = self.read_customer_list()
+        # Create an updated list with the new customer included
+        new_list = old_customer_list + [customer]
+        # Update the list of customers
+        self.update_customer_list(new_list)
+
+    # Update customer list
+    def update_customer_list(self, customer_list):
+        self.db.sim_info.update_one({"name": "sim-race"}, {"$set": {"customers": customer_list}})
+
+    # Sort customers in the database according to the sort_key 
+    def sort_customers(self, sort_key, ascending):
+        # Get customers
+        customers = self.read_customers()[0]["customers"]
+        # list of objects that do have the key
+        filter_obj = []
+        # list of objects that do not have the key
+        no_key = []
+        # Assign customers to temporary list within the for loop
+        for customer in customers:
+            # Add the object to respective list
+            if sort_key in customer:
+                filter_obj.append(customer)
+            else:
+                no_key.append(customer)
+        # Sort list with respect to the filter object
+        sorted_list = sorted(filter_obj, key=lambda x:x[sort_key], reverse=not ascending)
+        # Add lists together
+        sorted_list = sorted_list + no_key
+        # Update the database
+        self.update_customer_list(sorted_list)
+
+    # Remove customer from list using index
+    def remove_from_customer_list(self, index):
+        customer_list = self.read_customer_list()
+        # Make sure not to go out of range
+        if index < len(customer_list) and index >= 0:
+            # Remove the customer using the index
+            del customer_list[index]
+        # Update the list of customers without the removed customer
+        self.db.sim_info.update_one({"name": "sim-race"}, {"$set": {"customers": customer_list}})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
