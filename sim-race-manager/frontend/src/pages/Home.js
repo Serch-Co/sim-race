@@ -26,6 +26,13 @@ function Home() {
                 </div>
             </Link>
 
+            <Link to="/ManageSubscription" className="link">
+                <div className="menu-item">
+                <span className="menu-icon logs"></span>
+                <div className="menu-text">Manage Subscription</div>
+                </div>
+            </Link>
+
             <Link to="/Settings" className="link">
                 <div className="menu-item" onClick={handleColorChangeClick}>
                 <span className="menu-icon color"></span>

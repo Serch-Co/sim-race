@@ -6,8 +6,9 @@ function CreateRace() {
 	const navigate = useNavigate()
 
 	const defaultFormValues = {
-        game: '',
-        price: ''
+        name: '',
+        price: '',
+		description: ''
 	};
 
 	const [formValues, setFormValues] = useState({ ...defaultFormValues });
@@ -15,7 +16,7 @@ function CreateRace() {
 
 	const createClicked = () => {
 		const newFormValues = clearEmptyInput()
-		CreateRace(newFormValues)
+		createRace(newFormValues)
 	};
 
 	// Handle change
@@ -43,13 +44,14 @@ function CreateRace() {
 		return formValues
 	}
 
-	/* create add on and send to database */
+	/* create race and send to database */
 	const createRace = async () => {
+		console.log(formValues)
 		const formData = {
-			new_add_on: formValues
+			new_race: formValues
 		}
 
-		/**Call backend to add gymrat */
+		/**Call backend to add race */
 		return fetch("http://127.0.0.1:5000/createRace", {
 		method: "POST",
 		headers: {
@@ -67,7 +69,7 @@ function CreateRace() {
 			}
 		})
 		.catch((error) => {
-			console.error("Error updating add On:", error);
+			console.error("Error updating race:", error);
 			return false; // Error occurred
 		});
 	}
@@ -96,12 +98,26 @@ function CreateRace() {
                                     <input
                                         className="input-field"
                                         placeholder="Game"
-                                        aria-label="game"
+                                        aria-label="name"
                                         onChange={handleInputChange}
                                     />
                                 </div>
                             </div>
                         </div>
+
+						<div className="race-description">
+						<div className="box-title">Description</div>
+                            <div className="box">
+                                <div className="input-box">
+                                    <input
+                                        className="input-field"
+                                        placeholder="Description"
+                                        aria-label="description"
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                            </div>
+						</div>
 
                         <div className="race-price">
                             <div className="box-title">Price</div>

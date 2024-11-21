@@ -116,8 +116,103 @@ class Database:
         # Update the list of customers without the removed customer
         self.db.sim_info.update_one({"name": "sim-race"}, {"$set": {"customers": customer_list}})
 
+    ###########
+    ## RACES ##
+    ########### 
+
+    # Create Race
+    def create_race(self, race):
+        # Send race to the list
+        self.add_to_race_list(race)
+
+    # Read race
+    def read_race_by_id(self, race_id):
+        for race in self.read_race_list():
+            if(race['id'] == race_id):
+                return race
+    
+    # Update race in the race_list fo the db
+    def update_race(self, updates, race_id):
+        races = self.read_race_list()
+        new_race_list = []
+        for race in races:
+            if race_id == race["id"]:
+                new_race_list.append(updates)
+            else: 
+                new_race_list.append(race)
+        self.update_race_list(new_race_list)
+    
 
 
+    # Checks if an race can be deleted
+    def can_remove_race(self, race_id):
+        # Loop through customers
+        for customer in self.read_customer_list():
+            print(customer)
+            # Check if customer has races left
+            for race in customer['races']:
+                print(race)
+                # Return False if found
+                if race_id == race:
+                    return False
+        # return True
+        return False
+    
+    # Returns 
+
+
+    ###############
+    ## RACE LIST ##
+    ###############
+
+    # Read list of races
+    def read_race_list(self):
+        sim_info = self.read_races()
+        # Check if there exists a list of races
+        if 'races' in sim_info[0].keys():
+            return sim_info[0]['races']
+        # Return an empty list otherwise
+        return []
+    
+    # Read races by returning a list of races
+    def read_races(self):
+        races = self.db.sim_info.find()
+        races_list = []
+        for race in races:
+            race["_id"] = str(race["_id"])
+            races_list += [race]
+        return races_list
+    
+    # Add race to the list
+    def add_to_race_list(self, race):
+        # Create an updated list with the new race included
+        new_list = self.read_race_list() + [race]
+        # Update the list of races
+        self.update_race_list(new_list)
+
+    # Update race list
+    def update_race_list(self, race_list):
+        self.db.sim_info.update_one({"name": "sim-race"}, {"$set": {"races": race_list}})
+
+
+    ##################
+    ## SUBSCRIPTION ##
+    ##################
+
+    # Create subscription offered
+    def create_subscription_offered(self, subscription):
+        self.update_subscription_offered(subscription)
+
+    # Read subscription offered
+    def read_subscription_offered(self):
+        subscription = self.db.sim_info.find()[0]
+        if 'subscription' in subscription:
+            return subscription['subscription']
+        return []
+    
+    # Update subscription offered
+    def update_subscription_offered(self, subscription):
+        self.db.sim_info.update_one({"name": "sim-race"}, {"$set": {"subscription": subscription}})
 
 
 

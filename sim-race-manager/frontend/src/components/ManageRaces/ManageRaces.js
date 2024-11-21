@@ -12,7 +12,7 @@ function ManageRaces() {
 
     const fetchRaces = () => {
         try {
-            const url = "http://127.0.0.1:5000/getRaces";
+            const url = "http://127.0.0.1:5000/readRaces";
             fetch(url, { method: "GET" })
             .then((response) => {
                 if (!response.ok) {
@@ -67,6 +67,7 @@ function ManageRaces() {
                                 >
                                 <td>{race.name}</td>
                                 <td>{race.description}</td>
+                                <td>{race.price}</td>
                                 <td>{race.active.toString()}</td>
                             </tr>
                             ))}

@@ -11,9 +11,9 @@
 /sim-race-manager/backend/__pycache__
 
 # local var
-/sim-race-controller/frontend/src/.env
+/sim-race-controller/frontend/.env
 /sim-race-controller/backend/.env
-/sim-race-manager/frontend/src/.env
+/sim-race-manager/frontend/.env
 /sim-race-manager/backend/.env
 
 # production

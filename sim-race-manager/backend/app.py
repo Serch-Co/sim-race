@@ -3,10 +3,16 @@ from flask_cors import CORS
 import qrcode
 from io import BytesIO
 from customer import Customer
+from payment import Payment
+from subscription import Subscription
+from race import Race
 
 app = Flask(__name__)
 CORS(app)
 customer = Customer()
+payment = Payment()
+subscription = Subscription()
+race = Race()
 
 
 
@@ -61,8 +67,86 @@ def sort_customers():
     customer.sort_customers(data["sort_key"], data["ascending"])
     return {"message": "Data received succesfully"}, 200
 
+##########
+## RACE ##
+##########
+
+# Create Race
+@app.route("/createRace", methods=["POST"])
+def create_race():
+    data = request.get_json()
+    return race.create_race(data['new_race'])
+
+# Update race
+@app.route("/updateRace", methods=["POST"])
+def update_race():
+    data = request.get_json()
+    updates = data['updated_race']
+    race.update_race(updates, updates['id'], data['price_change'])
+    return "Race Updated!",200
+
+# remove Race using the race_id
+@app.route("/removeRace", methods=["POST"])
+def remove_race():
+    data = request.get_json()
+    success = race.remove_race(data['race_id'])
+    if success: return "race removed!",200
+    else: return jsonify({'error': 'The race could not be removed!'}), 400
 
 
+
+###############
+## RACE LIST ##
+###############
+
+# Read Races
+@app.route('/readRaces')
+def read_races():
+    races = race.read_races()
+    return races
+
+
+
+##############
+## PAYMENTS ##
+##############
+
+
+# Setup Payment intent for future use
+@app.route('/setUpPaymentIntent', methods=['POST'])
+def setup_payment_intent():
+    return payment.setup_payment_intent()
+
+
+##################
+## SUBSCRIPTION ##
+##################
+
+# Create suscription
+@app.route('/createSubscription', methods=['POST'])
+def create_subscription():
+    data = request.json
+    subscription.create_subscription(
+        data['customer_id'],
+        data['payment_method_id'],
+        data['nick_name'],
+        data['current'],
+        data['amount']
+    )
+    return {"message": "Data received succesfully"}, 200
+
+# Read subscription offered
+@app.route('/readSubscriptionOffered')
+def read_subscription_offered():
+    subs = subscription.read_subscription_offered()
+    return subs
+
+# Update subscription offered
+@app.route('/updateSubscriptionOffered', methods=['POST'])
+def update_subcription_offered():
+    data = request.json
+    subscription.update_subscription_offered(data['price'])
+    return {"message": "Data received succesfully"}, 200
 
 #############
 ## QR CODE ##

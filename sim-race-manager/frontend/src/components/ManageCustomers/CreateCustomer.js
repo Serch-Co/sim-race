@@ -10,7 +10,7 @@ function CreateCustomer() {
 	
 	const [isSaved, setIsSaved] = useState(true)
 	// Add ons variables
-	const [availableAddOns, setAddOns] = useState([])
+	const [availableRaces, setRaces] = useState([])
 	const [monthPrice, setMonthPrice] = useState(0)
 	const [annualPrice, setAnnualPrice] = useState(0)
 
@@ -35,8 +35,6 @@ function CreateCustomer() {
 			}
 		],
 		age: "",
-		height: "",
-		weight: "",
 		suscriptionPrice: 35,
 		startDate: {
 			month: "",
@@ -45,7 +43,7 @@ function CreateCustomer() {
 		},
 		payments: [],
 		subscription: [],
-		addOns: [],
+		races: [],
 		id: "",
 	};
 
@@ -97,10 +95,6 @@ function CreateCustomer() {
 		{ value: 30, label: 30 },
 		{ value: 31, label: 31 }
 	]
-	// const suscriptionOptions = [
-	// 	{ value: "Monthly", label: "Monthly" },
-	// 	{ value: "Annual", label: "Annual" }
-	// ]
 
 	const createClicked = () => {
 		const newFormValues = clearEmptyInput()
@@ -144,30 +138,30 @@ function CreateCustomer() {
 	};
 
 	// Handle adding or removing add on
-	const handleToggleCompleted = (addOnId) => {
-		for(let i = 0; i < availableAddOns.length; i++){
-			if(availableAddOns[i]['id'] === addOnId){
+	const handleToggleCompleted = (raceId) => {
+		for(let i = 0; i < availableRaces.length; i++){
+			if(availableRaces[i]['id'] === raceId){
 				// Add Item
-				if(!isAddOn(addOnId)){
-					formValues['addOns'].push(availableAddOns[i]['id'])
-					setMonthPrice(monthPrice + availableAddOns[i]['monthlyPrice'])
-					setAnnualPrice(annualPrice + availableAddOns[i]['annualPrice'])
+				if(!isRace(raceId)){
+					formValues['races'].push(availableRaces[i]['id'])
+					setMonthPrice(monthPrice + availableRaces[i]['monthlyPrice'])
+					setAnnualPrice(annualPrice + availableRaces[i]['annualPrice'])
 				}
 				// Remove Item
 				else{
 					// find element to remove
-					formValues['addOns'] = formValues['addOns'].filter(item => item !== addOnId)
-					setMonthPrice(monthPrice - availableAddOns[i]['monthlyPrice'])
-					setAnnualPrice(annualPrice - availableAddOns[i]['annualPrice'])
+					formValues['races'] = formValues['races'].filter(item => item !== raceId)
+					setMonthPrice(monthPrice - availableRaces[i]['monthlyPrice'])
+					setAnnualPrice(annualPrice - availableRaces[i]['annualPrice'])
 				}
-				i = availableAddOns.length
+				i = availableRaces.length
 			}
 		}	
 	};
 
-	function isAddOn(addOnId){
-		for (let i = 0; i < formValues['addOns'].length; i++){
-			if (formValues['addOns'][i] === addOnId){
+	function isRace(raceId){
+		for (let i = 0; i < formValues['races'].length; i++){
+			if (formValues['races'][i] === raceId){
 				return true
 			}
 		}
@@ -328,14 +322,14 @@ function CreateCustomer() {
 						<div className="card-header">Add races</div>
 
 						<div className="card-body">
-							{availableAddOns.map((item) => {
+							{availableRaces.map((item) => {
 								return (
 							<div key={item.id} className="checkbox-container">
 								<input
 									className="check-list"
 									type="checkbox"
 									id={item.id}
-									name="addOns"
+									name="races"
 									value={item.name}
 									onChange={() => handleToggleCompleted(item.id)}
 								/>

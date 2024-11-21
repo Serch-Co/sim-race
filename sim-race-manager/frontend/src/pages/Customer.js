@@ -35,7 +35,7 @@ function Customer() {
     
     useEffect(() => {
         fetchCustomer()
-    }, [])
+    })
     
     const defaultFormValues = {
         first_name: customer ? customer.first_name : "",
@@ -50,9 +50,7 @@ function Customer() {
             {
                 timeStampDoB: customer ? customer.birthdate[1] : "",
             }
-        ],
-        height: customer ? customer.height : "",
-        weight: customer ? customer.weight : ""
+        ]
     };
 
     const [formValues, setFormValues] = useState({ ...defaultFormValues });
@@ -157,7 +155,7 @@ function Customer() {
                 formValues[key] = adjustDoB(formValues[key], defaultFormValues[key])
                 dobNotChanged = false
             }
-            else if(formValues[key] == ''){
+            else if(formValues[key] === ''){
                 formValues[key] = defaultFormValues[key]
             }
         }
@@ -264,7 +262,7 @@ function Customer() {
                         Payment Methods
                     </button>
                     <button className="primary-btn" onClick={showRaces} >
-                        Manage Races
+                        Customer Races
                     </button>
                     <button className="primary-btn" onClick={generateQRCode} >
                         Generate QRCode
