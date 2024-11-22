@@ -35,7 +35,7 @@ function Customer() {
     
     useEffect(() => {
         fetchCustomer()
-    })
+    }, [])
     
     const defaultFormValues = {
         first_name: customer ? customer.first_name : "",

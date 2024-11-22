@@ -195,9 +195,9 @@ class Database:
         self.db.sim_info.update_one({"name": "sim-race"}, {"$set": {"races": race_list}})
 
 
-    ##################
-    ## SUBSCRIPTION ##
-    ##################
+    ###########################
+    ## SUBSCRIPTION  OFFERED ##
+    ###########################
 
     # Create subscription offered
     def create_subscription_offered(self, subscription):
@@ -214,6 +214,35 @@ class Database:
     def update_subscription_offered(self, subscription):
         self.db.sim_info.update_one({"name": "sim-race"}, {"$set": {"subscription": subscription}})
 
+    ##################
+    ## SUBSCRIPTION ##
+    ##################
+
+    # Create subscription
+    def create_subscription(self, customer_id, payment_method_id, subscription_id, subs_items):
+        customer = self.read_customer(customer_id)
+        customer['subscription'] = {
+            'status': 'Active',
+            'def_payment_method_id': payment_method_id,
+            'id': subscription_id,
+            'items': subs_items
+        }
+        self.update_customer(customer, customer_id)
+
+    ##############
+    ## PAYMENTS ##
+    ##############
+
+    # Create Payment and assign to customer using customer_id
+    def create_payment(self, customer_id, payment_id, nick_name, current):
+        customer = self.read_customer(customer_id)
+        payment = {
+            'id': payment_id,
+            'nick_name': nick_name,
+            'current': current
+        }
+        customer['payments'].append(payment)
+        self.update_customer(customer, customer_id)
 
 
 

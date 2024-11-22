@@ -184,16 +184,19 @@ class StripeApi:
             customer = db.read_customer(customer_id)
             # Attach payment to customer
             self.attach_payment_to_customer(payment_method_id, customer_id)
+            invoice_items = [{
+                'price': db.read_subscription_offered()['price_id'],
+                'quantity': 1
+            }]
             # Create a subscription for recurring payments
             subscription = stripe.Subscription.create(
                 customer=customer_id,
                 items=invoice_items,
                 default_payment_method=payment_method_id,
-                trial_period_days=20,
+                trial_period_days=14,
             )
-            subs_items = self.get_subscription_items(subscription['items'], customer['addOns'])
             # Add Subscription to customer in db
-            db.create_subscription(customer_id, payment_method_id, subscription.id, subs_items)
+            db.create_subscription(customer_id, payment_method_id, subscription.id, invoice_items[0])
             # Create payment in the db
             db.create_payment(customer_id, payment_method_id, nickname, current)
         except Exception as e:
@@ -245,9 +248,12 @@ class StripeApi:
             subs_offered = db.read_subscription_offered()
             # Create a new price for the product
             new_price_obj = stripe.Price.create(
-                unit_amount=util.dollar_to_cent(int(new_price)),
-                currency='USD',
                 product=subs_offered['product_id'],
+                unit_amount=util.dollar_to_cent(int(new_price)),
+                currency='usd',
+                recurring={
+                    'interval': 'year',
+                }
             )
             stripe.Price.modify(
                 subs_offered['price_id'],
