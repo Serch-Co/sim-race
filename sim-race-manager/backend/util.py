@@ -26,3 +26,14 @@ class Util:
     
     def cent_to_dollar(self, amount):
         return amount / 100
+    
+    def calculate_races_total_amount(self, races):
+        total_price = 0
+        for i in range(0, len(races)):
+            total_price += (races[i]['price'] * races[i]['quantity'])
+        return total_price
+    
+
+
+
+    

@@ -21,7 +21,7 @@ function ManageRaces() {
                 return response.json();
             })
             .then((racesData) => {
-                setRaces(racesData[0]["races"]);
+                setRaces(racesData);
             })
             .catch((error) => {
                 console.error("Error fetching races:", error.message);
@@ -54,6 +54,7 @@ function ManageRaces() {
                         <thead className="event-thead">
                             <tr>
                             <th>Game</th>
+                            <th>Description</th>
                             <th>Price</th>
                             <th>Active</th>
                             </tr>

@@ -117,6 +117,14 @@ def read_races():
 def setup_payment_intent():
     return payment.setup_payment_intent()
 
+# Create payment intent
+@app.route('/createPaymentIntent', methods=['POST'])
+def create_payment_intent():
+    data = request.json
+    print(data)
+    return payment.create_payment_intent(data['races'])
+
+
 
 ##################
 ## SUBSCRIPTION ##
@@ -131,7 +139,7 @@ def create_subscription():
         data['payment_method_id'],
         data['nick_name'],
         data['current'],
-        data['amount']
+        data['races'],
     )
     return {"message": "Data received succesfully"}, 200
 

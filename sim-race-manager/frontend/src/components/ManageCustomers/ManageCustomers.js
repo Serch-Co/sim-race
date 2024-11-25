@@ -28,7 +28,7 @@ function ManageCustomers() {
             return response.json()
             })
             .then((customersData) => {
-                setCustomers(customersData[0]["customers"])
+                setCustomers(customersData)
             })
             .catch((error) => {
                 console.error("Error fetching customers:", error.message)

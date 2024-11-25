@@ -10,8 +10,14 @@ class Database:
     def __init__(self):
         self.db = db
 
-
-
+    def read_db(self):
+        objs = self.db.sim_info.find()
+        objs_list = []
+        for obj in objs:
+            obj["_id"] = str(obj["_id"])
+            objs_list += [obj]
+        return objs_list
+        
     
     ###############
     ## CUSTOMERS ##
@@ -25,13 +31,13 @@ class Database:
 
     # Read customer using customer_id
     def read_customer(self, customer_id):
-        for customer in self.read_customer_list():
+        for customer in self.read_customers():
             if customer['id'] == customer_id:
                 return customer
             
     # Update customer in the customer_list fo the db
     def update_customer(self, updates, customer_id):
-        customers = self.read_customer_list()
+        customers = self.read_customers()
         new_customers_list = []
         for customer in customers:
             if customer_id == customer["id"]:
@@ -44,7 +50,7 @@ class Database:
     def delete_customer(self, customer_id):
         i = 0
         # Loop through customers to find the customer
-        for customer in self.read_customer_list():
+        for customer in self.read_customers():
             if customer['id'] == customer_id:
                 # Remove customer from the list inside the project
                 self.remove_from_customer_list(i)
@@ -54,27 +60,13 @@ class Database:
     ## CUSTOMER LIST ##
     ###################
 
-    # Read list of customers
-    def read_customer_list(self):
-        sim_info = self.read_customers()
-        # Check if there exists a list of customers
-        if 'customers' in sim_info[0].keys():
-            return sim_info[0]['customers']
-        # Return an empty list otherwise
-        return []
-
     # Read customers by returning a list of customers
     def read_customers(self):
-        customers = self.db.sim_info.find()
-        customers_list = []
-        for customer in customers:
-            customer["_id"] = str(customer["_id"])
-            customers_list += [customer]
-        return customers_list
+        return self.read_db()[0]['customers']
 
     # Add customer to the list
     def add_to_customer_list(self, customer):
-        old_customer_list = self.read_customer_list()
+        old_customer_list = self.read_customers()
         # Create an updated list with the new customer included
         new_list = old_customer_list + [customer]
         # Update the list of customers
@@ -108,7 +100,7 @@ class Database:
 
     # Remove customer from list using index
     def remove_from_customer_list(self, index):
-        customer_list = self.read_customer_list()
+        customer_list = self.read_customers()
         # Make sure not to go out of range
         if index < len(customer_list) and index >= 0:
             # Remove the customer using the index
@@ -127,13 +119,13 @@ class Database:
 
     # Read race
     def read_race_by_id(self, race_id):
-        for race in self.read_race_list():
+        for race in self.read_races():
             if(race['id'] == race_id):
                 return race
     
     # Update race in the race_list fo the db
     def update_race(self, updates, race_id):
-        races = self.read_race_list()
+        races = self.read_races()
         new_race_list = []
         for race in races:
             if race_id == race["id"]:
@@ -147,7 +139,7 @@ class Database:
     # Checks if an race can be deleted
     def can_remove_race(self, race_id):
         # Loop through customers
-        for customer in self.read_customer_list():
+        for customer in self.read_customers():
             print(customer)
             # Check if customer has races left
             for race in customer['races']:
@@ -165,28 +157,14 @@ class Database:
     ## RACE LIST ##
     ###############
 
-    # Read list of races
-    def read_race_list(self):
-        sim_info = self.read_races()
-        # Check if there exists a list of races
-        if 'races' in sim_info[0].keys():
-            return sim_info[0]['races']
-        # Return an empty list otherwise
-        return []
-    
     # Read races by returning a list of races
     def read_races(self):
-        races = self.db.sim_info.find()
-        races_list = []
-        for race in races:
-            race["_id"] = str(race["_id"])
-            races_list += [race]
-        return races_list
+        return self.read_db()[0]['races']
     
     # Add race to the list
     def add_to_race_list(self, race):
         # Create an updated list with the new race included
-        new_list = self.read_race_list() + [race]
+        new_list = self.read_races() + [race]
         # Update the list of races
         self.update_race_list(new_list)
 

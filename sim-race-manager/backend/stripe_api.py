@@ -164,7 +164,28 @@ class StripeApi:
             })
         except Exception as e:
             return jsonify(error=str(e)), 403
-        
+
+    # Create Payment
+    def create_payment_intent(self, races):
+        # print(customer_id, payment_method_id, nickname, current, races)
+        totalPayment = util.calculate_races_total_amount(races)
+        try:
+
+            # Create a PaymentIntent
+            intent = stripe.PaymentIntent.create(
+                amount=util.dollar_to_cent(totalPayment),  # Amount in cents
+                currency='usd', 
+                automatic_payment_methods={
+                    'enabled': True,  # Automatically handle payment methods
+                },
+            )
+
+            # TODO Create payment in db
+            return jsonify({'clientSecret': intent['client_secret']})
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
+
+
     # Attach payment to customer
     def attach_payment_to_customer(self, payment_method_id, customer_id):
         stripe.PaymentMethod.attach(
@@ -178,7 +199,7 @@ class StripeApi:
     ###################
 
     # Create Suscription plan
-    def create_subscription(self, customer_id, payment_method_id, nickname, current, amount):
+    def create_subscription(self, customer_id, payment_method_id, nickname, current, races):
         try:
             # Get customer
             customer = db.read_customer(customer_id)
@@ -193,12 +214,11 @@ class StripeApi:
                 customer=customer_id,
                 items=invoice_items,
                 default_payment_method=payment_method_id,
-                trial_period_days=14,
             )
             # Add Subscription to customer in db
             db.create_subscription(customer_id, payment_method_id, subscription.id, invoice_items[0])
             # Create payment in the db
-            db.create_payment(customer_id, payment_method_id, nickname, current)
+            # self.create_payment_intent(customer_id, payment_method_id, nickname, current, races)
         except Exception as e:
             print(e)
             return jsonify(error=str(e)), 403

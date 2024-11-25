@@ -2,24 +2,14 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import "./styles/CreateCustomer.css";
 import { useNavigate } from "react-router-dom";
-import { getTotalPriceInCents } from "../../utils/Helpers.js";
+import { dollarToCent } from "../../utils/Helpers.js";
 
 function CreateCustomer() {
 	const navigate = useNavigate()
 
 	
 	const [isSaved, setIsSaved] = useState(true)
-	// Add ons variables
 	const [availableRaces, setRaces] = useState([])
-	const [monthPrice, setMonthPrice] = useState(0)
-	const [annualPrice, setAnnualPrice] = useState(0)
-
-	const [createdCustomer, setCreatedCustomer] = useState([])
-
-	// Regex pattern for validating email
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	const [emailError, setEmailError] = useState("");
-
 	const defaultFormValues = {
 		first_name: "",
 		last_name: "", 
@@ -35,7 +25,7 @@ function CreateCustomer() {
 			}
 		],
 		age: "",
-		suscriptionPrice: 35,
+		subscriptionPrice: 35,
 		startDate: {
 			month: "",
 			day: "",
@@ -46,6 +36,38 @@ function CreateCustomer() {
 		races: [],
 		id: "",
 	};
+	const [totalPrice, setTotalPrice] = useState(defaultFormValues['subscriptionPrice'])
+
+	// Regex pattern for validating email
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	const [emailError, setEmailError] = useState("");
+
+	useEffect(() => {
+        fetchRaces()
+    }, [])
+
+	const fetchRaces = async () => {
+        try {
+            const url = "http://127.0.0.1:5000/readRaces"
+            fetch(url, { method: "GET" })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok")
+                }
+                return response.json()
+            })
+            .then((data) => {
+                setRaces(data)
+            })
+            .catch((error) => {
+                console.error("Error fetching Races:", error.message)
+            })
+        } catch (error) {
+            console.error("Error fetching Races:", error.message)
+        }
+    }
+
+	
 
 	const [formValues, setFormValues] = useState({ ...defaultFormValues });
 
@@ -120,12 +142,6 @@ function CreateCustomer() {
 		setIsSaved(false);
 	}
 
-	// Handle change in suscription
-	const handleSuscriptionChange = (property) => {
-		formValues["suscriptionType"] = property.value
-		setIsSaved(false);
-	};
-
 	// Handle validation for email
 	const validateEmail = (property) => {
 		const value = property.target.value;
@@ -137,35 +153,49 @@ function CreateCustomer() {
 		}
 	};
 
-	// Handle adding or removing add on
-	const handleToggleCompleted = (raceId) => {
-		for(let i = 0; i < availableRaces.length; i++){
-			if(availableRaces[i]['id'] === raceId){
-				// Add Item
-				if(!isRace(raceId)){
-					formValues['races'].push(availableRaces[i]['id'])
-					setMonthPrice(monthPrice + availableRaces[i]['monthlyPrice'])
-					setAnnualPrice(annualPrice + availableRaces[i]['annualPrice'])
+	const handleRaceAdded = (value, raceId, raceName, racePrice, racePriceID) => {
+		if(!value){
+			value = Number(0)
+		}
+		if (formValues['races'].length < 1){
+			formValues['races'].push({
+				id: raceId,
+				name: raceName,
+				price: racePrice,
+				price_id: racePriceID,
+				quantity: value
+			})
+		}
+		else{
+			const raceIndex = formValues['races'].findIndex(race => race.id === raceId)
+			if (raceIndex >= 0){
+				if (value === 0){
+					formValues['races'].pop(raceIndex)
 				}
-				// Remove Item
 				else{
-					// find element to remove
-					formValues['races'] = formValues['races'].filter(item => item !== raceId)
-					setMonthPrice(monthPrice - availableRaces[i]['monthlyPrice'])
-					setAnnualPrice(annualPrice - availableRaces[i]['annualPrice'])
+					formValues['races'][raceIndex]['quantity'] = value
 				}
-				i = availableRaces.length
 			}
-		}	
-	};
-
-	function isRace(raceId){
-		for (let i = 0; i < formValues['races'].length; i++){
-			if (formValues['races'][i] === raceId){
-				return true
+			else{
+				formValues['races'].push({
+					id: raceId,
+					name: raceName,
+					price: racePrice,
+					price_id: racePriceID,
+					quantity: value
+				})
 			}
 		}
-		return false
+		updateTotalPrice()
+	}
+
+	function updateTotalPrice(){
+		let racesTotal = 0
+		for (let i = 0; i < formValues['races'].length; i++){
+			console.log(formValues['races'][i])
+			racesTotal += (formValues['races'][i]['price'] * formValues['races'][i]['quantity'])
+		}
+		setTotalPrice(racesTotal + formValues['subscriptionPrice'])
 	}
 
 	const handleInputChange = (property) => {
@@ -188,8 +218,6 @@ function CreateCustomer() {
 
 	/* create Customer and send to database */
 	const createCustomer = async () => {
-		formValues['monthPrice'] = monthPrice
-		formValues['annualPrice'] = annualPrice
 
 		/**Call backend to add gymrat */
 		return fetch("http://127.0.0.1:5000/createCustomer", {
@@ -206,10 +234,11 @@ function CreateCustomer() {
 
 			const responseData = await response.json();
 			formValues['id'] = responseData['customer_id']
-			let totalPrice = getTotalPriceInCents(formValues)
+			let totalCents = dollarToCent(totalPrice)
 			let data = {
 				customer: formValues,
-				totalPrice: totalPrice
+				totalPrice: totalCents,
+				races: formValues['races']
 			}
 			navigate("../CheckoutForm", { state: data })
 			return true
@@ -320,23 +349,27 @@ function CreateCustomer() {
 
 					<div className="card">
 						<div className="card-header">Add races</div>
-
 						<div className="card-body">
 							{availableRaces.map((item) => {
 								return (
-							<div key={item.id} className="checkbox-container">
-								<input
-									className="check-list"
-									type="checkbox"
-									id={item.id}
-									name="races"
-									value={item.name}
-									onChange={() => handleToggleCompleted(item.id)}
-								/>
-								{item.name}
-							</div>
-							);
-						})}
+									<div key={item.id} className="checkbox-container">
+										Game: {item.name} Price: {item.price}
+										<input
+											type="number"
+											className="input-field"
+											placeholder="Quantity"
+											aria-label={item.name}
+											onChange={(e) => handleRaceAdded(
+												Number(e.target.value), 
+												item.id, 
+												item.name, 
+												Number(item.price),
+												item.price_id
+											)}
+										/>
+									</div>
+								);
+							})}
 						</div>
 					</div>
 
@@ -344,13 +377,13 @@ function CreateCustomer() {
                     <div className="box-title">Suscription per Year</div>
                         <div className="box">
 							<div className="info-box">
-								Price: {formValues['suscriptionPrice']}
+								Price: {formValues['subscriptionPrice']}
 							</div>
                         </div>
                     </div>
 					<div className="box">
 							<div className="info-box">
-								Total Price: {formValues['suscriptionPrice']}
+								Total Price: {totalPrice}
 							</div>
                         </div>
 					<div className="user-options">

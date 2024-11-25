@@ -1,0 +1,45 @@
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 300px;
+    transition: transform 0.3s;
+    margin: 20px;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-content {
+    padding: 16px;
+}
+
+.card h2 {
+    font-size: 1.5em;
+}
+
+.card p {
+    font-size: 1em;
+    color: #555;
+}
+
+.card-current{
+    padding: 16px;
+    background-color: var(--success-color);
+}
+
+.card-info-line{
+    display: flex;
+    justify-content: space-between;
+}
+
+.make-curr-btn{
+    background-color: var(--success-color);
+}
+
+.delete-btn{
+    background-color: red;
+}
+  
