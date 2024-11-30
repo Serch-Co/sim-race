@@ -11,6 +11,8 @@ import ManageCustomers from "./components/ManageCustomers/ManageCustomers"
 import CustomerRaces from "./components/ManageCustomers/CustomerRaces"
 import CreateRace from "./components/ManageRaces/CreateRace"
 import ManageRaces from "./components/ManageRaces/ManageRaces"
+import CreatePayment from "./components/ManagePayments/CreatePayment"
+import ManagePayments from "./components/ManagePayments/ManagePayments"
 import Home from './pages/Home'
 import Settings from "./pages/Settings"
 import Customer from "./pages/Customer"
@@ -41,6 +43,12 @@ function App() {
 					<Route path="/CustomerRaces" element={CustomerRaces} />
 					<Route path="/CreateRace" element={CreateRace} />
 					<Route path="/ManageRaces" element={ManageRaces} />
+					<Route path="/CreatePayment" element={
+						<Elements stripe={stripePromise}>
+							<CreatePayment />
+						</Elements>
+					} />
+					<Route path="/ManagePayments" element={ManagePayments} />
 					<Route path="/Home" element={Home} />
 					<Route path="/Settings" element={Settings} />
 					<Route path="/Customer" element={Customer} />

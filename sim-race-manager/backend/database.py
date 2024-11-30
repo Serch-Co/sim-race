@@ -211,8 +211,12 @@ class Database:
     ## PAYMENTS ##
     ##############
 
+    # Read customer payments
+    def read_customer_payment_methods(self, customer_id):
+        return self.read_customer(customer_id)['payments']
+
     # Create Payment and assign to customer using customer_id
-    def create_payment(self, customer_id, payment_id, nick_name, current):
+    def create_customer_payment_method(self, customer_id, payment_id, nick_name, current):
         customer = self.read_customer(customer_id)
         payment = {
             'id': payment_id,
@@ -222,6 +226,20 @@ class Database:
         customer['payments'].append(payment)
         self.update_customer(customer, customer_id)
 
+    # Update Payments for customer
+    def update_customer_payment_methods(self, payments, customer_id):
+        customer = self.read_customer(customer_id)
+        customer['payments'] = payments
+        self.update_customer(customer, customer_id)
+
+    # Remove payement method from customer
+    def remove_customer_payment_method(self, customer_id, payment_id):
+        payments = self.read_customer_payment_methods(customer_id)
+        for i in range(0, len(payments)):
+            if payments[i]['id'] == payment_id:
+                payments.pop(i)
+                break
+        self.update_customer_payment_methods(payments, customer_id)
 
 
 

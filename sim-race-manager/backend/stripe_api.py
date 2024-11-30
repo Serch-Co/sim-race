@@ -193,6 +193,26 @@ class StripeApi:
                 customer=customer_id,
             )
 
+    # Retrieve Payment from stripe
+    def retrieve_payment_method(self, payment_id):
+        return stripe.PaymentMethod.retrieve(payment_id)
+    
+    # Remove customer payment method
+    def remove_customer_payment_method(self, customer_id, payment_method_id):
+        stripe.PaymentMethod.detach(payment_method_id)
+        db.remove_customer_payment_method(customer_id, payment_method_id)
+
+    # Update customer payment method in subscription
+    def update_subscription_payment_method(self, customer_id, payment_method_id):
+        customer = db.read_customer(customer_id)
+        # Update the subscription to use the new payment method in stripe
+        stripe.Subscription.modify(
+            customer['subscription']['id'],
+            default_payment_method=payment_method_id
+        )
+        # Update payment method in database
+        customer['subscription']['def_payment_method_id'] = payment_method_id
+        db.update_customer(customer, customer_id)
         
     ###################
     ## SUBSCRIPTIONS ##
@@ -218,7 +238,7 @@ class StripeApi:
             # Add Subscription to customer in db
             db.create_subscription(customer_id, payment_method_id, subscription.id, invoice_items[0])
             # Create payment in the db for customer
-            db.create_payment(customer_id, payment_method_id, nickname, current)
+            db.create_customer_payment_method(customer_id, payment_method_id, nickname, current)
         except Exception as e:
             print(e)
             return jsonify(error=str(e)), 403

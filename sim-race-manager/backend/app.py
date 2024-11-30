@@ -111,7 +111,33 @@ def read_races():
 ## PAYMENTS ##
 ##############
 
+# Read payments from customer
+@app.route('/readCustomerPaymentMethods', methods=['POST'])
+def read_customer_payment_methods():
+    data = request.json
+    return payment.read_customer_payment_methods(data['customer_id']), 200
 
+# Create payment for customer
+@app.route('/createCustomerPaymentMethod', methods=['POST'])
+def create_customer_payment_method():
+    data = request.json
+    payment.create_customer_payment_method(data['customer_id'], data['payment_method_id'], data['nick_name'], data['current'])
+    return {"message": "Data received succesfully"}, 200
+
+# Update current customer Card
+@app.route('/updateCustomerCurrentCard', methods=['POST'])
+def update_customer_current_card():
+    data = request.json
+    payment.update_customer_current_card(data['customer_id'], data['payment_id'])
+    return {"message": "Data received succesfully"}, 200
+
+# Remove Payment
+@app.route('/removeCustomerPaymentMethod', methods=['POST'])
+def remove_customer_payment_method():
+    data = request.json
+    payment.remove_customer_payment_method(data['customer_id'], data['payment_id'])
+    return {"message": "Data received succesfully"}, 200
+    
 # Setup Payment intent for future use
 @app.route('/setUpPaymentIntent', methods=['POST'])
 def setup_payment_intent():
