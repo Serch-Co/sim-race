@@ -24,5 +24,5 @@ class Subscription:
             stripe_api.update_subscription_offered(new_price)
 
     # Create subscription
-    def create_subscription(self, customer_id, payment_method_id, nickname, current, races):
-        stripe_api.create_subscription(customer_id, payment_method_id, nickname, current, races)
+    def create_subscription(self, customer_id, payment_method_id, nickname, current):
+        stripe_api.create_subscription(customer_id, payment_method_id, nickname, current)

@@ -2,14 +2,38 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import "./styles/CreateCustomer.css";
 import { useNavigate } from "react-router-dom";
-import { dollarToCent } from "../../utils/Helpers.js";
+import { centToDollar } from "../../utils/Helpers";
 
 function CreateCustomer() {
 	const navigate = useNavigate()
+	const [subscriptionPrice, setSubscriptionPrice] = useState(0)
 
+	useEffect(() => {
+        fetchSubscription()
+    }, [])
+
+    const fetchSubscription = () => {
+        try {
+            const url = "http://127.0.0.1:5000/readSubscriptionOffered"
+            fetch(url, { method: "GET" })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok")
+                }
+                return response.json()
+            })
+            .then((subscriptionData) => {
+                setSubscriptionPrice(subscriptionData['price'])
+            })
+            .catch((error) => {
+                console.error("Error fetching subscription:", error.message)
+            })
+        } catch (error) {
+            console.error("Error fetching subscription:", error.message)
+        }
+    }
 	
 	const [isSaved, setIsSaved] = useState(true)
-	const [availableRaces, setRaces] = useState([])
 	const defaultFormValues = {
 		first_name: "",
 		last_name: "", 
@@ -25,7 +49,7 @@ function CreateCustomer() {
 			}
 		],
 		age: "",
-		subscriptionPrice: 35,
+		subscriptionPrice: 0,
 		startDate: {
 			month: "",
 			day: "",
@@ -36,38 +60,10 @@ function CreateCustomer() {
 		races: [],
 		id: "",
 	};
-	const [totalPrice, setTotalPrice] = useState(defaultFormValues['subscriptionPrice'])
 
 	// Regex pattern for validating email
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	const [emailError, setEmailError] = useState("");
-
-	useEffect(() => {
-        fetchRaces()
-    }, [])
-
-	const fetchRaces = async () => {
-        try {
-            const url = "http://127.0.0.1:5000/readRaces"
-            fetch(url, { method: "GET" })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok")
-                }
-                return response.json()
-            })
-            .then((data) => {
-                setRaces(data)
-            })
-            .catch((error) => {
-                console.error("Error fetching Races:", error.message)
-            })
-        } catch (error) {
-            console.error("Error fetching Races:", error.message)
-        }
-    }
-
-	
 
 	const [formValues, setFormValues] = useState({ ...defaultFormValues });
 
@@ -153,51 +149,6 @@ function CreateCustomer() {
 		}
 	};
 
-	const handleRaceAdded = (value, raceId, raceName, racePrice, racePriceID) => {
-		if(!value){
-			value = Number(0)
-		}
-		if (formValues['races'].length < 1){
-			formValues['races'].push({
-				id: raceId,
-				name: raceName,
-				price: racePrice,
-				price_id: racePriceID,
-				quantity: value
-			})
-		}
-		else{
-			const raceIndex = formValues['races'].findIndex(race => race.id === raceId)
-			if (raceIndex >= 0){
-				if (value === 0){
-					formValues['races'].pop(raceIndex)
-				}
-				else{
-					formValues['races'][raceIndex]['quantity'] = value
-				}
-			}
-			else{
-				formValues['races'].push({
-					id: raceId,
-					name: raceName,
-					price: racePrice,
-					price_id: racePriceID,
-					quantity: value
-				})
-			}
-		}
-		updateTotalPrice()
-	}
-
-	function updateTotalPrice(){
-		let racesTotal = 0
-		for (let i = 0; i < formValues['races'].length; i++){
-			console.log(formValues['races'][i])
-			racesTotal += (formValues['races'][i]['price'] * formValues['races'][i]['quantity'])
-		}
-		setTotalPrice(racesTotal + formValues['subscriptionPrice'])
-	}
-
 	const handleInputChange = (property) => {
 		formValues[property.target.ariaLabel] = property.target.value
 		setIsSaved(false);
@@ -218,6 +169,7 @@ function CreateCustomer() {
 
 	/* create Customer and send to database */
 	const createCustomer = async () => {
+		formValues['subscriptionPrice'] = subscriptionPrice
 
 		/**Call backend to add gymrat */
 		return fetch("http://127.0.0.1:5000/createCustomer", {
@@ -234,17 +186,15 @@ function CreateCustomer() {
 
 			const responseData = await response.json();
 			formValues['id'] = responseData['customer_id']
-			let totalCents = dollarToCent(totalPrice)
 			let data = {
 				customer: formValues,
-				totalPrice: totalCents,
-				races: formValues['races']
+				totalPrice: subscriptionPrice,
 			}
 			navigate("../CheckoutForm", { state: data })
 			return true
 		})
 		.catch((error) => {
-			console.error("Error updating customer:", error);
+			console.error("Error creating customer:", error);
 			return false; // Error occurred
 		});
 	}
@@ -260,6 +210,12 @@ function CreateCustomer() {
 			createClicked()
 		}
 	  };
+
+	if(!subscriptionPrice){
+		return (
+			<div>Loading...</div>
+		)
+	}
 
 
   return (
@@ -347,45 +303,15 @@ function CreateCustomer() {
                         </div>
                     </div>
 
-					<div className="card">
-						<div className="card-header">Add races</div>
-						<div className="card-body">
-							{availableRaces.map((item) => {
-								return (
-									<div key={item.id} className="checkbox-container">
-										Game: {item.name} Price: {item.price}
-										<input
-											type="number"
-											className="input-field"
-											placeholder="Quantity"
-											aria-label={item.name}
-											onChange={(e) => handleRaceAdded(
-												Number(e.target.value), 
-												item.id, 
-												item.name, 
-												Number(item.price),
-												item.price_id
-											)}
-										/>
-									</div>
-								);
-							})}
-						</div>
-					</div>
-
                     <div className="customer-suscription">
                     <div className="box-title">Suscription per Year</div>
                         <div className="box">
 							<div className="info-box">
-								Price: {formValues['subscriptionPrice']}
+								Price: {centToDollar(subscriptionPrice)}
 							</div>
                         </div>
                     </div>
-					<div className="box">
-							<div className="info-box">
-								Total Price: {totalPrice}
-							</div>
-                        </div>
+					
 					<div className="user-options">
 						<button
 							className="primary-btn"

@@ -199,7 +199,7 @@ class StripeApi:
     ###################
 
     # Create Suscription plan
-    def create_subscription(self, customer_id, payment_method_id, nickname, current, races):
+    def create_subscription(self, customer_id, payment_method_id, nickname, current):
         try:
             # Get customer
             customer = db.read_customer(customer_id)
@@ -217,8 +217,8 @@ class StripeApi:
             )
             # Add Subscription to customer in db
             db.create_subscription(customer_id, payment_method_id, subscription.id, invoice_items[0])
-            # Create payment in the db
-            # self.create_payment_intent(customer_id, payment_method_id, nickname, current, races)
+            # Create payment in the db for customer
+            db.create_payment(customer_id, payment_method_id, nickname, current)
         except Exception as e:
             print(e)
             return jsonify(error=str(e)), 403

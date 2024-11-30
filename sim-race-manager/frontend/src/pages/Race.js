@@ -50,10 +50,10 @@ function Race() {
      */
     function clearEmptyInput(){
         for (let key in formValues) {
-            if(formValues[key] == ''){
+            if(formValues[key] === ''){
                 formValues[key] = defaultFormValues[key]
             }
-            if(formValues[key] == 0){
+            if(formValues[key] === 0){
                 formValues[key] = defaultFormValues[key]
             }
         }

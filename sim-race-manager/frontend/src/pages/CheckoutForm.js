@@ -10,8 +10,7 @@ const CheckoutForm = () => {
     const stripe = useStripe();
     const elements = useElements();
     const [totalPrice, setTotalPrice] = useState(0)
-    const [clientSecretIntent, setClientSecretIntent] = useState('')
-    const [clientSecretPayment, setClientSecretPayment] = useState('')
+    const [clientSecret, setClientSecret] = useState('')
     const [cardDetails, setCardDetails] = useState({
         nickName: '',
         name: '',
@@ -21,131 +20,36 @@ const CheckoutForm = () => {
         postal_code: ''
     });
 
-
     useEffect(() => {
         setTotalPrice(data['totalPrice'])
 
-        const setUpPaymentIntent = () => {
-            try {
-                fetch('http://127.0.0.1:5000/setUpPaymentIntent', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.clientSecret) {
-                        setClientSecretIntent(data.clientSecret); // Store clientSecretIntent for later use
-                    } else {
-                        console.error("Failed to retrieve client secret intent");
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            } catch (error) {
-                console.error('Error:', error)
+        fetch('http://127.0.0.1:5000/setUpPaymentIntent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.clientSecret) {
+                setClientSecret(data.clientSecret)
+            } else {
+                console.error("Failed to retrieve client secret intent")
             }
-        }
-        const createPaymentIntent = async() => {
-            try{
-                const response = await fetch('http://127.0.0.1:5000/createPaymentIntent', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        races: data['races']
-                    })
-                })
-                const newData = await response.json()
-                if(newData.clientSecret){
-                    setClientSecretPayment(newData.clientSecret)
-                }
-            } catch (error) {
-                console.error('Error:', error)
-            }
-        }
+        })
+        .catch(error => console.error('Error:', error));
 
-        setUpPaymentIntent()
-        createPaymentIntent()
     }, [data]);
 
-    async function handleSetupIntent() {
-        if (!clientSecretIntent) {
-            console.error("No client secret available");
-            return false
-        }
-        const cardElement = elements?.getElement(CardElement)
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-        if(!cardElement){
-            console.error('CardElement is not mounted or elements is null in setup intent.')
-            return
+        if (!clientSecret) {
+            console.error("No client secret available");
+            return;
         }
-        
-        try {
     
-            const { error, setupIntent } = await stripe.confirmCardSetup(clientSecretIntent, {
-                payment_method: {
-                    card: elements.getElement(CardElement),
-                    billing_details: {
-                        name: cardDetails.name,
-                        address: {
-                            line1: cardDetails.address,
-                            city: cardDetails.city,
-                            state: cardDetails.state,
-                            postal_code: cardDetails.postal_code
-                        }
-                    },
-                }
-            });
-        
-            if (error) {
-                console.log(error);
-            } else {
-                /**Call backend to create a subscription */
-                fetch("http://127.0.0.1:5000/createSubscription", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        customer_id: data['customer']['id'],
-                        payment_method_id: setupIntent['payment_method'],
-                        nick_name: cardDetails.nickName,
-                        current: true,
-                        races: data['races']
-                    }),
-                })
-                .then((response) => {
-                    if (!response.ok) {
-                        return false; // Unsuccessful response
-                    }
-                    return true
-                })
-                .catch((error) => {
-                    console.error("Error creating payment method:", error);
-                    return false; // Error occurred
-                });
-            }
-        }catch(error){
-            console.log(error)
-        }
-    }
-
-    async function handlePaymentIntent() {
-        if (!clientSecretPayment) {
-            console.error("No client secret available");
-            return false
-        }
-        // console.log('payment intent card details', cardDetails)
-
-        const cardElement = elements?.getElement(CardElement)
-
-        if(!cardElement){
-            console.error('card element not found in payment')
-            return
-        }
-        console.log(cardElement)
-
-        const { result } = await stripe.confirmCardPayment(clientSecretPayment, {
+        const { error, setupIntent } = await stripe.confirmCardSetup(clientSecret, {
             payment_method: {
-                card: cardElement,
+                card: elements.getElement(CardElement),
                 billing_details: {
                     name: cardDetails.name,
                     address: {
@@ -157,28 +61,30 @@ const CheckoutForm = () => {
                 },
             }
         });
-        console.log(result)
-        if (result.error) {
-            console.error(result.error);
+    
+        if (error) {
+            console.log(error);
         } else {
-            /**Call backend to create a Payment */
-            fetch("http://127.0.0.1:5000/createPayment", {
+            /**Call backend to create a subscription */
+            fetch("http://127.0.0.1:5000/createSubscription", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    customer_id: data['customer']['id'],
-                    payment_method_id: '',
+                    payment_method_id: setupIntent['payment_method'],
+                    amount: totalPrice,
                     nick_name: cardDetails.nickName,
                     current: true,
-                    races: data['races']
+                    customer_id: data['customer']['id']
                 }),
             })
             .then((response) => {
                 if (!response.ok) {
                     return false; // Unsuccessful response
                 }
+                alert('Continue to customer races to add races to Customer')
+                navigate('../Customer', { state: data['customer']['id'] })
                 return true
             })
             .catch((error) => {
@@ -186,19 +92,6 @@ const CheckoutForm = () => {
                 return false; // Error occurred
             });
         }
-    }
-
-    const handleSubmit = async (event) => {
-        // console.log(cardDetails)
-
-        event.preventDefault();
-        const intentSuccess = handleSetupIntent()
-        // const paymentSuccess = handlePaymentIntent()
-        
-        if (intentSuccess ){ //&& paymentSuccess){
-            navigate('../ManageCustomers')
-        }
-
     };
 
     const handleChange = (event) => {

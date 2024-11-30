@@ -138,8 +138,7 @@ def create_subscription():
         data['customer_id'],
         data['payment_method_id'],
         data['nick_name'],
-        data['current'],
-        data['races'],
+        data['current']
     )
     return {"message": "Data received succesfully"}, 200
 
