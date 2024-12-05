@@ -1,9 +1,6 @@
-import Select from "react-select"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-
-
-
+import { dollarToCent, centToDollar } from "../utils/Helpers"
 
 function ManageSubscription(){
 
@@ -15,13 +12,8 @@ function ManageSubscription(){
         price: subscription ? subscription.price : "",
     };
 
-    
     const [formValues, setFormValues] = useState({ ...defaultFormValues });
-    const location = useLocation()
     const navigate = useNavigate()
-
-    
-
 
     useEffect(() => {
         fetchSubscription()
@@ -52,17 +44,15 @@ function ManageSubscription(){
     }
 
     const handleInputChange = (property) => {
-        formValues[property.target.ariaLabel] = property.target.value
+        formValues[property.target.ariaLabel] = dollarToCent(property.target.value)
     };
 
     const updateClicked = () => {
         updateSubscription()
     }
 
-
     /* Update Subscription and send to database */
     const updateSubscription = async () => {
-        console.log(formValues)
 
         /**Call backend update gymrat */
         return fetch("http://127.0.0.1:5000/updateSubscriptionOffered", {
@@ -102,7 +92,7 @@ function ManageSubscription(){
         <div className="user-view">
             <div className="main-container">
                 <div className="user-suscription">
-                    {subscription.length == 0 ? 
+                    {subscription.length === 0 ? 
                         <h3>
                             Assign Subscription Price
                         </h3>:
@@ -119,7 +109,7 @@ function ManageSubscription(){
 
                         <div className="info-box">
                             Total Price:
-                            {subscription.length == 0 ? 
+                            {subscription.length === 0 ? 
                                 <input 
                                     type="number"
                                     className="input-field"
@@ -131,7 +121,7 @@ function ManageSubscription(){
                                     type="number"
                                     className="input-field"
                                     aria-label="price"
-                                    placeholder={subscription['price']}
+                                    placeholder={centToDollar(subscription['price'])}
                                     onChange={handleInputChange}
                                 />
                             }

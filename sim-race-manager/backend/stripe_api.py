@@ -257,7 +257,7 @@ class StripeApi:
             # Create a price for subscription
             price_obj = stripe.Price.create(
                 product=subscription_product.id,
-                unit_amount=util.dollar_to_cent(int(price)),  # Price
+                unit_amount=int(price),  # Price
                 currency='usd',
                 recurring={
                     'interval': 'year',
@@ -289,7 +289,7 @@ class StripeApi:
             # Create a new price for the product
             new_price_obj = stripe.Price.create(
                 product=subs_offered['product_id'],
-                unit_amount=util.dollar_to_cent(int(new_price)),
+                unit_amount=int(new_price),
                 currency='usd',
                 recurring={
                     'interval': 'year',

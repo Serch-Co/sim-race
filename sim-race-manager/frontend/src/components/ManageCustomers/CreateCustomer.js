@@ -25,6 +25,7 @@ function CreateCustomer() {
                 return response.json()
             })
             .then((subscriptionData) => {
+				setLoading(false)
                 setSubscriptionPrice(subscriptionData['price'])
             })
             .catch((error) => {
