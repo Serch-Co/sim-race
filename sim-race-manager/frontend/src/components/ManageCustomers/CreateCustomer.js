@@ -7,6 +7,8 @@ import { centToDollar } from "../../utils/Helpers";
 function CreateCustomer() {
 	const navigate = useNavigate()
 	const [subscriptionPrice, setSubscriptionPrice] = useState(0)
+	const [loading, setLoading] = useState(true)
+	const [reloadSign, setReloadSign] = useState(false)
 
 	useEffect(() => {
         fetchSubscription()
@@ -26,9 +28,11 @@ function CreateCustomer() {
                 setSubscriptionPrice(subscriptionData['price'])
             })
             .catch((error) => {
+				setReloadSign(true)
                 console.error("Error fetching subscription:", error.message)
             })
         } catch (error) {
+			setReloadSign(true)
             console.error("Error fetching subscription:", error.message)
         }
     }
@@ -211,7 +215,14 @@ function CreateCustomer() {
 		}
 	  };
 
-	if(!subscriptionPrice){
+	
+	if(reloadSign){
+		return (
+            <div>Reload page to try again</div>
+		)
+	}
+
+	if(loading){
 		return (
 			<div>Loading...</div>
 		)

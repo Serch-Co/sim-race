@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 function ManageRaces() {
 
     const [races, setRaces] = useState([]);
+    const [loading, setLoading] = useState(true)
+    const [reloadSign, setReloadSign] = useState(false)
 
     useEffect(() => {
         fetchRaces();
@@ -21,12 +23,15 @@ function ManageRaces() {
                 return response.json();
             })
             .then((racesData) => {
+                setLoading(false)
                 setRaces(racesData);
             })
             .catch((error) => {
+                setReloadSign(true)
                 console.error("Error fetching races:", error.message);
             });
         } catch (error) {
+            setReloadSign(true)
             console.error("Error fetching races:", error.message);
         }
     };
@@ -40,6 +45,18 @@ function ManageRaces() {
     const handleRaceClick = (race) => {
         navigate("../Race", { state: race })
     };
+
+    if(reloadSign){
+        return (
+            <div>Reload page to try again</div>
+        )
+    }
+
+    if(loading){
+        return (
+            <div>Loading...</div>
+        )
+    }
 
     return (
         <div className="user-view">

@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 function ManageCustomers() {
 
     const [customers, setCustomers] = useState([]);
+    const [loading, setLoading] = useState(true)
+    const [reloadSign, setReloadSign] = useState(false)
 
     // Sort key selected of the table of customers
     const [sortKey, setSortKey] = useState(null);
@@ -28,12 +30,15 @@ function ManageCustomers() {
             return response.json()
             })
             .then((customersData) => {
+                setLoading(false)
                 setCustomers(customersData)
             })
             .catch((error) => {
+                setReloadSign(true)
                 console.error("Error fetching customers:", error.message)
             })
         } catch (error) {
+            setReloadSign(true)
             console.error("Error fetching customers:", error.message);
         }
     };
@@ -122,6 +127,18 @@ function ManageCustomers() {
         } else {
             alert("Select an option");
         }
+    }
+
+    if(reloadSign){
+        return (
+            <div>Reload page to try again</div>
+        )
+    }
+
+    if(loading){
+        return (
+            <div>Loading...</div>
+        )
     }
 
     return (

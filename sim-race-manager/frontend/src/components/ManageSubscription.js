@@ -8,6 +8,8 @@ import { useState, useEffect } from "react"
 function ManageSubscription(){
 
     const [subscription, setSubscription] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [reloadSign, setReloadSign] = useState(false)
 
     const defaultFormValues = {
         price: subscription ? subscription.price : "",
@@ -36,12 +38,15 @@ function ManageSubscription(){
                 return response.json()
             })
             .then((subscriptionData) => {
+                setLoading(false)
                 setSubscription(subscriptionData)
             })
             .catch((error) => {
+                setReloadSign(true)
                 console.error("Error fetching subscription:", error.message)
             })
         } catch (error) {
+            setReloadSign(true)
             console.error("Error fetching subscription:", error.message)
         }
     }
@@ -81,10 +86,13 @@ function ManageSubscription(){
         });
     }
 
+    if(reloadSign){
+        return (
+            <div>Reload page to try again</div>
+        )
+    }
 
-
-    if (!subscription){
-        console.log(subscription)
+    if(loading){
         return (
             <div>Loading...</div>
         )
