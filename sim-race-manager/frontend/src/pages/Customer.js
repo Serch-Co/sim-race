@@ -364,6 +364,11 @@ function Customer() {
                         </div>
                     </form>
                 </div>
+                <div className="user-options">
+                    <button className="primary-btn">
+                        Get Customer Stats
+                    </button>
+                </div>
             </div>
 
             <ConfirmCustomerDeletion
