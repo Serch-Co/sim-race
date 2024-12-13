@@ -165,25 +165,21 @@ class StripeApi:
         except Exception as e:
             return jsonify(error=str(e)), 403
 
-    # Create Payment
-    def create_payment_intent(self, races):
-        # print(customer_id, payment_method_id, nickname, current, races)
-        totalPayment = util.calculate_races_total_amount(races)
-        try:
-
-            # Create a PaymentIntent
-            intent = stripe.PaymentIntent.create(
-                amount=util.dollar_to_cent(totalPayment),  # Amount in cents
-                currency='usd', 
-                automatic_payment_methods={
-                    'enabled': True,  # Automatically handle payment methods
-                },
-            )
-
-            # TODO Create payment in db
-            return jsonify({'clientSecret': intent['client_secret']})
-        except Exception as e:
-            return jsonify({'error': str(e)}), 400
+    # # Create Payment
+    # def create_payment_intent(self, data):
+    #     try:
+    #         # Create a PaymentIntent
+    #         intent = stripe.PaymentIntent.create(
+    #             amount=data['amount'],  # Amount in cents
+    #             currency='usd', 
+    #             automatic_payment_methods={
+    #                 'enabled': True,  # Automatically handle payment methods
+    #             },
+    #         )
+    #         return jsonify({'clientSecret': intent['client_secret']})
+    #     except Exception as e:
+    #         print(e)
+    #         return jsonify({'error': str(e)}), 400
 
 
     # Attach payment to customer
@@ -213,6 +209,38 @@ class StripeApi:
         # Update payment method in database
         customer['subscription']['def_payment_method_id'] = payment_method_id
         db.update_customer(customer, customer_id)
+
+    # Make Payment
+    def add_races_payment(self, customer_id, amount, currency, customer, races):
+        def_payment_method_id = self.find_def_payment_method_id(customer_id)
+        try:
+            intent = stripe.PaymentIntent.create(
+                amount=amount,
+                currency=currency,
+                customer=customer_id,
+                payment_method=def_payment_method_id,
+                off_session=True,
+                confirm=True
+            )
+            updated_customer = customer
+            updated_customer['races'] = races
+            # Call db to update the customer
+            db.update_customer(updated_customer, customer_id)
+
+            return jsonify({"status": "success", "paymentIntent": intent})
+        except stripe.error.CardError as e:
+            print(e)
+            return jsonify({"error": str(e.user_message)}), 400
+        except Exception as e:
+            print(e)
+            return jsonify({"error": str(e)}), 400
+
+    # Find default payment method id
+    def find_def_payment_method_id(self, customer_id):
+        payments = db.read_customer_payment_methods(customer_id)
+        for payment in payments:
+            if payment['current']:
+                return payment['id']
         
     ###################
     ## SUBSCRIPTIONS ##

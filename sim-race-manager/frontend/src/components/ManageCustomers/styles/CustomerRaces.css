@@ -1,0 +1,12 @@
+.total-price-info-box{
+    border: 2px solid var(--button-color);
+    border-radius: 8px;
+    padding: 5px 30px 5px 30px;
+    margin: 20px;
+    width: fit-content;
+}
+
+.input-num-field{
+    border: 2px solid var(--button-color);
+    border-radius: 8px;
+}

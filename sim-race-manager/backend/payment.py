@@ -1,10 +1,11 @@
 from flask import jsonify
 from stripe_api import StripeApi
 from database import Database
+from race import Race
 
 stripe_api = StripeApi()
 db = Database()
-
+race = Race()
 
 
 class Payment:
@@ -19,9 +20,9 @@ class Payment:
     def setup_payment_intent(self):
         return stripe_api.setup_payment_intent()
     
-    # Create payment intent
-    def create_payment_intent(self, races):
-        return stripe_api.create_payment_intent(races)
+    # # Create payment intent
+    # def create_payment_intent(self, races):
+    #     return stripe_api.create_payment_intent(races)
 
     ##############
     ## PAYMENTS ##
@@ -90,3 +91,8 @@ class Payment:
             if payment['id'] == payment_id:
                 payment['current'] = True
         return payments
+    
+    # Make Payment
+    def add_races_payment(self, customer_id, amount, currency, customer, races):
+        races = race.update_customer_race_list(customer_id, races)
+        stripe_api.add_races_payment(customer_id, amount, currency, customer, races)

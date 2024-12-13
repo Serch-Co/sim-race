@@ -1,119 +1,43 @@
-import Select from "react-select"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-
-
-
+import "./styles/CustomerRaces.css"
 
 function CustomerRaces(){
 
-    
     const location = useLocation()
     const customer = location.state
     const navigate = useNavigate()
 
-    const [availableAddOns, setAddOns] = useState([])
-    const [monthPrice, setMonthPrice] = useState(customer['monthPrice'])
-    const [annualPrice, setAnnualPrice] = useState(customer['annualPrice'])
     const [totalPrice, setTotalPrice] = useState(0)
-    const [prevAddOns, setPrevAddOns] = useState([])
+    const [availableRaces, setAvailableRaces] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [reloadSign, setReloadSign] = useState(false)
+    const [races, setRaces] = useState([])
+    const [exitRacePrice, setExitRacePrice] = useState([])
 
     useEffect(() => {
-        fetchAddOns()
-        checkSuscription(false)
-        // setPrevAddOns(customer['addOns'].slice())
-    }, [])
-
-    const fetchAddOns = () => {
         try {
-            const url = "http://127.0.0.1:5000/getActiveAddOns"
+            const url = "http://127.0.0.1:5000/readRaces";
             fetch(url, { method: "GET" })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error("Network response was not ok")
+                    throw new Error("Network response was not ok");
                 }
-                return response.json()
+                return response.json();
             })
-            .then((addOnsData) => {
-                setAddOns(addOnsData)
+            .then((racesData) => {
+                setLoading(false)
+                setAvailableRaces(racesData);
             })
             .catch((error) => {
-                console.error("Error fetching addOns:", error.message)
-            })
+                setReloadSign(true)
+                console.error("Error fetching races:", error.message);
+            });
         } catch (error) {
-            console.error("Error fetching addOns:", error.message)
+            setReloadSign(true)
+            console.error("Error fetching races:", error.message);
         }
-    }
-
-    function checkSuscription(priceChange, monthlyPrice=0, annuallyPrice=0){
-        if(priceChange){
-            if(customer['suscriptionType'] === "Monthly"){
-                setTotalPrice(monthlyPrice)
-            } else if (customer['suscriptionType'] === "Annual"){
-                setTotalPrice(annuallyPrice)
-            }
-        }
-        else{
-            if(customer['suscriptionType'] === "Monthly"){
-                setTotalPrice(monthPrice)
-            } else if (customer['suscriptionType'] === "Annual"){
-                setTotalPrice(annualPrice)
-            }
-        }
-        
-    }
-
-    // Handle change in suscription
-	const handleSuscriptionChange = (property) => {
-		customer["suscriptionType"] = property.value
-        checkSuscription(false)
-		// setIsSaved(false)
-	}
-
-    function updatePrices(monthPrice, annualPrice){
-        setMonthPrice(monthPrice)
-        setAnnualPrice(annualPrice)
-        
-        customer['monthPrice'] = monthPrice
-        customer['annualPrice'] = annualPrice
-
-        checkSuscription(true, monthPrice, annualPrice)
-    }
-
-    // Handle adding or removing add on
-	const handleToggleCompleted = (addOnId) => {
-		for(let i = 0; i < availableAddOns.length; i++){
-			if(availableAddOns[i]['id'] === addOnId){
-				// AddOn not in list, so add it
-				if(!isAddOn(addOnId)){
-                    availableAddOns[i]['checked'] = true
-					customer['addOns'].push(availableAddOns[i]['id'])
-                    customer.monthPrice = customer.monthPrice + availableAddOns[i]['monthlyPrice']
-                    customer.annualPrice = customer.annualPrice + availableAddOns[i]['annualPrice']
-				}
-				// addon exists, so remove addon
-				else{
-                    availableAddOns[i]['checked'] = false
-					// find element to remove
-					customer['addOns'] = customer['addOns'].filter(item => item !== addOnId)
-                    customer.monthPrice = customer.monthPrice - availableAddOns[i]['monthlyPrice']
-                    customer.annualPrice = customer.annualPrice - availableAddOns[i]['annualPrice']
-				}
-				i = availableAddOns.length
-			}
-		}
-        updatePrices(customer.monthPrice, customer.annualPrice)
-	}
-
-    function isAddOn(addOnId){
-		for (let i = 0; i < customer['addOns'].length; i++){
-			if (customer['addOns'][i] === addOnId){
-				return true
-			}
-		}
-		return false
-	}
-
+    }, [setReloadSign])
 
     const showPaymentMethods = () => {
         navigate('/ManagePayments', { state: customer})
@@ -124,7 +48,12 @@ function CustomerRaces(){
     }
 
     const updateClicked = () => {
-        updateSubscription(customer)
+        let data = {
+            customer: customer,
+            totalAmount: totalPrice,
+            races: races
+        }
+        navigate('../AddRaces', { state: data } )
     }
 
     const pauseClicked = () => {
@@ -135,77 +64,7 @@ function CustomerRaces(){
         resumeSubscription()
     }
 
-    function updateItems(newAddOns){
-        let itemsToUpdate = []
-        for(let i = 0; i < availableAddOns.length; i++){
-            // Both list have addOnID
-            if(addOnInList(availableAddOns[i]['id'],newAddOns) && addOnInList(availableAddOns[i]['id'],prevAddOns)){
-                itemsToUpdate.push({
-                    'id': availableAddOns[i]['id'],
-                    'action': 'update'
-                })
-            }
-            // Only New list has addOnID
-            else if(addOnInList(availableAddOns[i]['id'], newAddOns)){
-                itemsToUpdate.push({
-                    'id': availableAddOns[i]['id'],
-                    'action': 'add'
-                })
-            }
-            // Only prev list has addOnID
-            else if(addOnInList(availableAddOns[i]['id'], prevAddOns)){
-                itemsToUpdate.push({
-                    'id': availableAddOns[i]['id'],
-                    'action': 'remove'
-                })
-            }
-            else{
-                continue
-            }
-        }
-        return itemsToUpdate
-    }
-
-    function addOnInList(addOn, list){
-        for(let i = 0; i < list.length; i++){
-            if (list[i] === addOn){
-                return true
-            }
-        }
-        return false
-    }
-
-    /* Update Subscription and send to database */
-    const updateSubscription = async () => {
-        let itemsToUpdate = updateItems(customer['addOns'])
-        const formData = {
-            customer_id: customer['id'],
-            updated_customer: customer,
-            items_to_update: itemsToUpdate
-        }
-
-        /**Call backend update gymrat */
-        return fetch("http://127.0.0.1:5000/updateSubscription", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        })
-        .then((response) => {
-            if (response.ok) {
-                navigate('../Customer', { state: customer['id']})
-                return true; // Successful response
-            } else {
-                return false; // Failed response
-            }
-        })
-        .catch((error) => {
-            console.error("Error updating Subscription:", error);
-            return false; // Error occurred
-        });
-    }
-
+    // TODO CURRENTLY NOT IN USE
     /* pause Subscription and send to database */
     const pauseSubscription = async () => {
         /**Call backend pause gymrat */
@@ -230,6 +89,7 @@ function CustomerRaces(){
         });
     }
 
+    // TODO CURRENTLY NOT IN USE
     /* resume Subscription and send to database */
     const resumeSubscription = async () => {
         /**Call backend resume gymrat */
@@ -254,7 +114,61 @@ function CustomerRaces(){
         });
     }
 
-    if (!availableAddOns){
+    function readCurrentRaces(raceID){
+        if(customer['races'].length === 0){
+            return 0
+        }
+        for(let i = 0; i < customer['races'].length; i++){
+            if(customer['races'][i]['id'] === raceID){
+                return customer['races'][i]['quantity']
+            }
+        }
+        return 0
+    }
+
+    const updateRaces = (e, race, index) => {
+        let quantity = Number(e.target.value)
+        setRaces((prevRaces) => {
+            const existingRace = prevRaces.find((item) => item.id === race.id);
+            if (existingRace) {
+                // Update the quantity
+                let racePrice = quantity * race.price
+                exitRacePrice[index] = racePrice
+                updateTotalPrice()
+                return prevRaces
+                .map((item) =>
+                    item.id === race.id
+                    ? { ...item, quantity: quantity }
+                    : item
+                )
+                .filter((item) => item.quantity > 0); // Remove items with quantity 0
+            } else {
+                // Add new item if quantity > 0
+                let racePrice = quantity * race.price
+                exitRacePrice[index] = racePrice
+                updateTotalPrice()
+                return quantity > 0 ? [...prevRaces, { ...race, quantity }] : prevRaces;
+            }
+        })
+    }
+
+    function updateTotalPrice(){
+        let total = 0
+        for(let i = 0; i < exitRacePrice.length; i++){
+            if(exitRacePrice[i]){
+                total += exitRacePrice[i]
+            }
+        }
+        setTotalPrice(total)
+    }
+
+    if(reloadSign){
+        return (
+            <div>Reload page to try again</div>
+        )
+    }
+
+    if(loading){
         return (
             <div>Loading...</div>
         )
@@ -274,43 +188,52 @@ function CustomerRaces(){
                         <button className="primary-btn" onClick={showPaymentMethods} >
                             Payment Methods
                         </button>
-                        <button className="primary-btn" onClick={updateClicked} >
-                            Update Subscription
-                        </button>
+                        {totalPrice > 0 ?
+                            <button className="primary-btn" onClick={updateClicked} >
+                                Update Races
+                            </button> : 
+                            <button className="primary-btn">
+                            Update Races
+                            </button>
+                        }
                     </div>
                     <div className="box-title">Suscription Status: {customer.subscription.status}</div>
                     <div className="box">
-                        
-                        
-                        <div className="card">
-                            <div className="card-header">Choose add-ons</div>
+                        <table>
+                            <thead className="race-thead">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price each</th>
+                                    <th>To Add</th>
+                                    <th>Current</th>
+                                    <th>Exit Price</th>
+                                </tr>
+                            </thead>
 
-                            <div className="card-body">
-                                {availableAddOns.map((item) => {
-                                    return (
-                                        <div key={item.id} className="checkbox-container">
-                                            <input
-                                                className="check-list"
-                                                type="checkbox"
-                                                id={item.id}
-                                                name="addOns"
-                                                checked={!!isAddOn(item.id) || !!item.checked}
-                                                value={item.name}
-                                                onChange={() => handleToggleCompleted(item.id)}
-                                            />
-                                            {item.name}
-                                        </div>
-                                        )
-                                    }
-                                )}
-                            </div>
-                        </div>
-                        <div className="info-box">
-                            Total Price:
-                            <div>
-                                {totalPrice}
-                            </div>
-                        </div>
+                            <tbody>
+                                {availableRaces.map((race, index) => (
+                                <tr
+                                    key={race.id}
+                                    >
+                                    <td>{race.name}</td>
+                                    <td>{race.price}</td>
+                                    <td>
+                                        <input
+                                            className="input-num-field"
+                                            type="number"
+                                            aria-label="quantity"
+                                            onChange={(e) => updateRaces(e, race, index)}
+                                        />
+                                    </td>
+                                    <td>{readCurrentRaces(race.id)}</td>
+                                    <td>{exitRacePrice[index] ? exitRacePrice[index] : 0}</td>
+                                </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="total-price-info-box">
+                        Total Price: {totalPrice}
                     </div>
                     <div>
                         {customer.subscription.status === 'Active' ? 
@@ -328,23 +251,3 @@ function CustomerRaces(){
 }
 
 export default <CustomerRaces/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

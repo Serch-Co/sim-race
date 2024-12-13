@@ -11,8 +11,8 @@ function Customer() {
     const navigate = useNavigate();
 
     const [customer, setCustomer] = useState(null)
-
-    const fetchCustomer = async () => {
+    
+    useEffect(() => {
         try {
             const url = "http://127.0.0.1:5000/readCustomer?customer_id="+customer_id
             fetch(url, { method: "GET" })
@@ -31,11 +31,7 @@ function Customer() {
         } catch (error) {
             console.error("Error fetching Customer:", error.message)
         }
-    }
-    
-    useEffect(() => {
-        fetchCustomer()
-    }, [])
+    }, [customer_id])
     
     const defaultFormValues = {
         first_name: customer ? customer.first_name : "",

@@ -6,6 +6,7 @@ import { Elements } from "@stripe/react-stripe-js"
 
 import Header from './components/Header'
 import ManageSubscription from "./components/ManageSubscription"
+import AddRaces from "./components/ManageCustomers/AddRaces"
 import CreateCustomer from "./components/ManageCustomers/CreateCustomer"
 import ManageCustomers from "./components/ManageCustomers/ManageCustomers"
 import CustomerRaces from "./components/ManageCustomers/CustomerRaces"
@@ -38,6 +39,7 @@ function App() {
 				<Routes>
 					<Route path="/" element={Home} />
 					<Route path="/ManageSubscription" element={ManageSubscription} />
+					<Route path="/AddRaces" element={AddRaces} />
 					<Route path="/CreateCustomer" element={CreateCustomer} />
 					<Route path="/ManageCustomers" element={ManageCustomers} />
 					<Route path="/CustomerRaces" element={CustomerRaces} />

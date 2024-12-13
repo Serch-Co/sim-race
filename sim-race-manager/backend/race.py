@@ -38,3 +38,29 @@ class Race:
     def read_races(self):
         races = db.read_races()
         return races
+    
+    ####################
+    ## CUSTOMER RACES ##
+    ####################
+
+    # Make the customer race list as objects
+    def update_customer_race_list(self, customer_id, races):
+        # Read current races to merge with new
+        customer_races = db.read_customer(customer_id)['races']
+        original_dict = {item["id"]: item for item in customer_races}
+        # Update original list with customer list
+        for race in races:
+            if race["id"] in original_dict:
+                # Update quantity for existing item
+                original_dict[race["id"]]["quantity"] += race["quantity"]
+            else:
+                # Add new item
+                original_dict[race["id"]] = {
+                    'id': race['id'],
+                    'name': race['name'],
+                    'description': race['description'],
+                    'quantity': race['quantity']
+                }
+        return list(original_dict.values())
+
+
