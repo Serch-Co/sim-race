@@ -51,15 +51,17 @@ function ConfirmRaceDeletion(props) {
 
   return props.trigger ? (
     <div className="background">
-      <div className="confirmation-module">
-        Delete Race with name: {props.raceName}
-        <div>
-          <button onClick={confirmDeletionClicked} className="secondary-btn">
-            Confirm
-          </button>
-          <button onClick={cancelDeletionClicked} className="secondary-btn">
-            Cancel
-          </button>
+      <div className="main-container">
+        <div className="confirmation-module">
+          Delete Race with name: {props.raceName}
+          <div>
+            <button onClick={confirmDeletionClicked} className="primary-btn">
+              Confirm
+            </button>
+            <button onClick={cancelDeletionClicked} className="primary-btn">
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>
