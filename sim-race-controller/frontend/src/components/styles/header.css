@@ -1,0 +1,27 @@
+.header {
+    font-size: 30px; /* Increased size */
+    font-weight: bold; /* Make it bold */
+    color: #333;
+    padding: 20px;
+    background: var(--background);
+    display: flex;
+    justify-content: space-between; /* Adjust alignment */
+    align-items: center; /* Center items vertically */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Shadow for depth */
+  }
+  
+  /* Additions for the navigation buttons */
+  .nav-button {
+    padding: 10px 20px;
+    background-color: var(--button-color); /* Button color */
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px; /* Spacing between buttons */
+    transition: background-color 0.3s;
+  }
+  
+  .nav-button:hover {
+    background-color: var(--secondary-button-color); /* Darker shade on hover */
+  }
+  

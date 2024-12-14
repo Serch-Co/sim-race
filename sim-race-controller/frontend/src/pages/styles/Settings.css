@@ -1,0 +1,118 @@
+/* Change Color */
+.color-selector {
+    display: flex;
+}
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-left: 5px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #2196f3; /* Blue when switch is on the right */
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #ccc; /* Gray when switch is on the left */
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(24px);
+    -ms-transform: translateX(24px);
+    transform: translateX(24px);
+}
+
+.select-box {
+    width: 15px;
+    height: 15px;
+    background-color: #e0e0e0;
+    margin: 5px;
+  }
+.selector-menu{
+    display: flex;
+    position: relative;
+    
+    /* justify-content: center;
+    justify-content: space-around; */
+}
+
+.label {
+    position:inherit;
+    left: 0%;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+.selection-box{
+    padding: 5%;
+    display: flex;
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    
+}
+
+.color-box{
+    margin: 2%;
+    width: 200px;
+    height: 200px;
+    background-color: black;
+}
+
+.selectors{
+    display: flex;
+}
+
+.save-button {
+    width: 150px;
+    height: 50px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+    background-color: var(--button-color);
+    color: white;
+    border: none;
+    cursor: pointer; 
+    transition: background-color 0.3s;
+}
+
+.save-button:hover {
+    background-color: var(--secondary-button-color); /* Darker shade on hover */
+}
