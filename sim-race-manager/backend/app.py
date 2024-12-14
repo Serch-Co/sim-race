@@ -109,6 +109,15 @@ def remove_race():
     if success: return "race removed!",200
     else: return jsonify({'error': 'The race could not be removed!'}), 400
 
+# restore Race using the race_id
+# Used by 
+# ConfirmRaceDeletion.js
+@app.route("/restoreRace", methods=["POST"])
+def restore_race():
+    data = request.get_json()
+    success = race.restore_race(data['race_id'])
+    if success: return "race restored!",200
+    else: return jsonify({'error': 'The race could not be removed!'}), 400
 
 
 ###############

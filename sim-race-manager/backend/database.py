@@ -148,9 +148,7 @@ class Database:
                 if race_id == race:
                     return False
         # return True
-        return False
-    
-    # Returns 
+        return True
 
 
     ###############

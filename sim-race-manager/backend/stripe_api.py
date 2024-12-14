@@ -134,16 +134,31 @@ class StripeApi:
     # remove race by race_id
     def remove_race(self, race_id):
         race = db.read_race_by_id(race_id)
-        print(race)
         try:
             if not db.can_remove_race(race_id):
                 return False
-            # Archive the product month
-            product_month = stripe.Product.modify(
+            # Archive the product
+            product = stripe.Product.modify(
                 race['id'],
                 active=False  # This deactivates the product
             )
             race['active'] = False
+            db.update_race(race, race_id)
+            return True
+        except Exception as e:
+            print(str(e))
+            return False
+        
+    # Restore race by race_id
+    def restore_race(self, race_id):
+        race = db.read_race_by_id(race_id)
+        try:
+            # Archive the product
+            product = stripe.Product.modify(
+                race['id'],
+                active=True  # This restores the product
+            )
+            race['active'] = True
             db.update_race(race, race_id)
             return True
         except Exception as e:

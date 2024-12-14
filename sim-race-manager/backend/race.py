@@ -29,6 +29,9 @@ class Race:
     def remove_race(self, race_id):
         return stripe_api.remove_race(race_id)
 
+    # restore race by race_id
+    def restore_race(self, race_id):
+        return stripe_api.restore_race(race_id)
 
     ###############
     ## RACE LIST ##

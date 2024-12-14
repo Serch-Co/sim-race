@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-// import "./styles/user.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import ConfirmRaceDeletion from "../components/ManageRaces/ConfirmRaceDeletion"
-// import ConfirmRaceRestoration from "../Components/ManageRaces/ConfirmRaceRestoration.js"
+import ConfirmRaceRestoration from "../components/ManageRaces/ConfirmRaceRestoration.js"
 
 function Race() {
 
@@ -166,12 +165,12 @@ function Race() {
                     </form>
                 </div>
             </div>
-            {/* <ConfirmRaceRestoration
+            <ConfirmRaceRestoration
                 trigger={confimrRestorationModule}
                 setTrigger={setConfimrRestorationModule}
                 raceName={race.name}
                 raceId={race.id}
-            /> */}
+            />
             <ConfirmRaceDeletion
                 trigger={confimrDeletionModule}
                 setTrigger={setConfimrDeletionModule}
