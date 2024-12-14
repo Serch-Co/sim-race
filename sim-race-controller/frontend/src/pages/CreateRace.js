@@ -16,7 +16,7 @@ function CreateRace() {
 
     const fetchRaces = () => {
         try {
-            const url = "http://127.0.0.1:5000/readRaces";
+            const url = "http://127.0.0.1:8080/readRaces";
             fetch(url, { method: "GET" })
             .then((response) => {
                 if (!response.ok) {
