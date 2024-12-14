@@ -215,19 +215,28 @@ function CustomerRaces(){
                                 <tr
                                     key={race.id}
                                     >
-                                    <td>{race.name}</td>
-                                    <td>{race.price}</td>
-                                    <td>
-                                        <input
-                                            className="input-num-field"
-                                            type="number"
-                                            aria-label="quantity"
-                                            onChange={(e) => updateRaces(e, race, index)}
-                                        />
-                                    </td>
-                                    <td>{readCurrentRaces(race.id)}</td>
-                                    <td>{exitRacePrice[index] ? exitRacePrice[index] : 0}</td>
-                                </tr>
+                                        {race.active ?
+                                        <>
+                                            <td>{race.name}</td>
+                                            <td>{race.price}</td>
+                                            <td>
+                                                <input
+                                                    className="input-num-field"
+                                                    type="number"
+                                                    aria-label="quantity"
+                                                    onChange={(e) => updateRaces(e, race, index)} />
+                                            </td>
+                                            <td>{readCurrentRaces(race.id)}</td>
+                                            <td>{exitRacePrice[index] ? exitRacePrice[index] : 0}</td>
+                                        </>
+                                        : <>
+                                            <td>{race.name}</td>
+                                            <td>N/A</td>
+                                            <td>N/A</td>
+                                            <td>{readCurrentRaces(race.id)}</td>
+                                            <td>N/A</td>
+                                        </>}
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>
