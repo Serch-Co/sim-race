@@ -111,7 +111,7 @@ def remove_race():
 
 # restore Race using the race_id
 # Used by 
-# ConfirmRaceDeletion.js
+# ConfirmRaceRestoration.js
 @app.route("/restoreRace", methods=["POST"])
 def restore_race():
     data = request.get_json()
