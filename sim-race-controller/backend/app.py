@@ -10,12 +10,12 @@ race = Race()
 ## RACES ##
 ###########
 
-# Read Races
+# Read Active Races
 # Used by
 # CreateRaces.js
-@app.route('/readRaces')
-def read_races():
-    races = race.read_races()
+@app.route('/readActiveRaces')
+def read_active_races():
+    races = race.read_active_races()
     return races
     
 

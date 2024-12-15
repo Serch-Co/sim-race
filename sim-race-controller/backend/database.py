@@ -22,6 +22,11 @@ class Database:
     ## RACE LIST ##
     ###############
 
-    # Read races by returning a list of races
-    def read_races(self):
-        return self.read_db()[0]['races']
+    # Read active races by returning a list of active races
+    def read_active_races(self):
+        races = self.read_db()[0]['races']
+        active_races = []
+        for race in races:
+            if race['active']:
+                active_races.append(race)
+        return active_races

@@ -2,7 +2,7 @@
  * Page handles which race will be created 
  */
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function CreateRace() {
 
@@ -16,7 +16,7 @@ function CreateRace() {
 
     const fetchRaces = () => {
         try {
-            const url = "http://127.0.0.1:8080/readRaces";
+            const url = "http://127.0.0.1:8080/readActiveRaces";
             fetch(url, { method: "GET" })
             .then((response) => {
                 if (!response.ok) {
