@@ -1,6 +1,7 @@
 import socket
 
-client_ips = ["192.168.1.71"]  # List of client IPs
+## Hardcoded for now
+client_ips = ['192.168.1.105',"192.168.1.71"]  # List of client IPs
 port = 5000
 
 for client_ip in client_ips:

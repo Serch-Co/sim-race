@@ -8,6 +8,10 @@ function Header() {
                 <Link to="/Home">
                     <button className='nav-button'>Home</button>
                 </Link>
+                
+                <Link to="/ManageSimulators">
+                    <button className='nav-button'>Manage Simulators</button>
+                </Link>
             </div>
             <div>
                 { process.env.REACT_APP_NAME }

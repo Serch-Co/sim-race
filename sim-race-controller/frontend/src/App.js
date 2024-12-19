@@ -3,6 +3,7 @@ import { useEffect } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import Header from "./components/Header"
+import ManageSimulators from "./components/ManageSimulators/ManageSimulators"
 import Home from './pages/Home'
 import Settings from "./pages/Settings"
 import CreateRace from "./pages/CreateRace"
@@ -22,6 +23,7 @@ function App() {
 				<Header />
 				<Routes>
 					<Route path="/" element={Home} />
+					<Route path="/ManageSimulators" element={ManageSimulators} />
 					<Route path="/Home" element={Home} />
 					<Route path="/Settings" element={Settings} />
 					<Route path="/CreateRace" element={CreateRace} />

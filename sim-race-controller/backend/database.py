@@ -30,3 +30,14 @@ class Database:
             if race['active']:
                 active_races.append(race)
         return active_races
+
+    ####################
+    ## SIMULATOR LIST ##
+    ####################
+
+    # Read simulators by returning a list of simulators
+    def read_simulators(self):
+        database = self.read_db()[0]
+        if not 'simulators' in database: return []
+        return database['simulators']
+

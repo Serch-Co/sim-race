@@ -2,15 +2,15 @@ import socket
 import subprocess
 
 # Configuration for games
-# TODO change exocross path for when exocross is available
+# TODO change f1 path for when f1 is available
 rfactor2_path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\rFactor 2\\Bin64\\rFactor2.exe"
-exocross_path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\rFactor 2\\Bin64\\rFactor2.exe"
+f1_path = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\rFactor 2\\Bin64\\rFactor2.exe"
 server_ip = "192.168.1.155"
 server_password = "password123"
 
 # Set up the socket to listen for commands
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind(('0.0.0.0', 5000))  # Listens on port 5000
+    s.bind(('0.0.0.0', 8080))  # Listens on port 5000
     s.listen()
     print("Client app listening for commands...")
     
@@ -26,9 +26,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 subprocess.Popen(f'"{rfactor2_path}"')
                 conn.sendall(b"rFactor 2 launched in Sim 1")
             elif command == "start_exo_cross":
-                command = f'"{exocross_path}" +connect={server_ip} +password={server_password}'
+                command = f'"{f1_path}" +connect={server_ip} +password={server_password}'
                 # subprocess.Popen(command)
-                subprocess.Popen(f'"{exocross_path}"')
+                subprocess.Popen(f'"{f1_path}"')
                 conn.sendall(b"Exo Cross launched in Sim 1")
             else:
                 conn.sendall(b"Unknown command")

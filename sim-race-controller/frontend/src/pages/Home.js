@@ -14,6 +14,9 @@ function Home() {
             <div className="main-menu-label">Main Menu</div>
 
             <Link to="/CreateRace" className="link">
+            {/* TODO Send to assing sitting to customers in each
+                available simulator to keep stats
+                instead of creating a race*/}
                 <div className="menu-item">
                 <span className="menu-icon logs"></span>
                 <div className="menu-text">Create Race</div>

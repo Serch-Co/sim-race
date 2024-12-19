@@ -10,7 +10,7 @@ class Race:
     ## RACE LIST ##
     ###############
 
-    # read list of races in the gym
+    # read list of races
     def read_active_races(self):
         races = db.read_active_races()
         return races
