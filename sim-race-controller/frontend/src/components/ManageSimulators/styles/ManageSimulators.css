@@ -65,4 +65,12 @@ thead th {
     position: sticky;
     top: 0;
 }
+
+.sim-connected {
+    color: green;
+}
+
+.sim-not-connected {
+    color: red;
+}
   

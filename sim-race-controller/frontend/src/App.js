@@ -3,6 +3,7 @@ import { useEffect } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import Header from "./components/Header"
+import AddSimulator from "./components/ManageSimulators/AddSimulator"
 import ManageSimulators from "./components/ManageSimulators/ManageSimulators"
 import Home from './pages/Home'
 import Settings from "./pages/Settings"
@@ -23,6 +24,7 @@ function App() {
 				<Header />
 				<Routes>
 					<Route path="/" element={Home} />
+					<Route path="/AddSimulator" element={AddSimulator} />
 					<Route path="/ManageSimulators" element={ManageSimulators} />
 					<Route path="/Home" element={Home} />
 					<Route path="/Settings" element={Settings} />

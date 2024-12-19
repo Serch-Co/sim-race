@@ -10,7 +10,7 @@ server_password = "password123"
 
 # Set up the socket to listen for commands
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind(('0.0.0.0', 8080))  # Listens on port 5000
+    s.bind(('0.0.0.0', 8080))  # Listens on port 8080
     s.listen()
     print("Client app listening for commands...")
     
