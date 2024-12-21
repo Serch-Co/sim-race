@@ -34,7 +34,16 @@ class Simulator:
             'name': name,
             'number': number,
             'ip': ip,
-            'sim_id': new_id
+            'id': str('sim_'+new_id)
         }
         db.add_simulator(simulator)
+
+    # Read simulator by id
+    def read_simulator(self, sim_id):
+        return db.read_simulator(sim_id)
+    
+    # Update Simulator
+    def update_simulator(self, sim_id, updates):
+        db.update_simulator(sim_id, updates)
+
 

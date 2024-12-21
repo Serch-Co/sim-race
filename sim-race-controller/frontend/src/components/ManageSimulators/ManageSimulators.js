@@ -59,6 +59,10 @@ function ManageSimulators() {
         }
     }
 
+    const handleSimulatorClick = (sim_id) => {
+        navigate("../Simulator", { state: sim_id })
+    }
+
     if(reloadSign){
         return (
             <div>Reload page to try again</div>
@@ -94,22 +98,22 @@ function ManageSimulators() {
 
                         <tbody>
                             {simulators.map((simulator) => (
-                                
-                            <tr
-                                key={simulator.sim_id}
-                                >
-                                <td>{simulator.name}</td>
-                                <td>{simulator.number}</td>
-                                <td>{simulator.ip}</td>
-                                <td>{simulator.status ?
-                                    <div className="sim-connected">
-                                        Connected
-                                    </div>:
-                                    <div className="sim-not-connected">
-                                        Not Connected
-                                    </div>
-                                }</td>
-                            </tr>
+                                <tr
+                                    key={simulator.id}
+                                    onClick={() => handleSimulatorClick(simulator.id)}
+                                    >
+                                    <td>{simulator.name}</td>
+                                    <td>{simulator.number}</td>
+                                    <td>{simulator.ip}</td>
+                                    <td>{simulator.status ?
+                                        <div className="sim-connected">
+                                            Connected
+                                        </div>:
+                                        <div className="sim-not-connected">
+                                            Not Connected
+                                        </div>
+                                    }</td>
+                                </tr>
                             ))}
                         </tbody>
                     </table>

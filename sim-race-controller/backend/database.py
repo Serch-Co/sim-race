@@ -62,4 +62,21 @@ class Database:
     def add_simulator(self, simulator):
         self.add_to_simulator_list(simulator)
 
+    # Read simulator by id
+    def read_simulator(self, sim_id):
+        for simulator in self.read_simulators():
+            if simulator['id'] == sim_id:
+                return simulator
+
+    # update simulator
+    def update_simulator(self, sim_id, updates):
+        simulators = self.read_simulators()
+        new_simulators_list = []
+        for simulator in simulators:
+            if sim_id == simulator["id"]:
+                new_simulators_list.append(updates)
+            else: 
+                new_simulators_list.append(simulator)
+        self.update_simulator_list(new_simulators_list)
+
 

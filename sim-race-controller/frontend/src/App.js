@@ -8,6 +8,7 @@ import ManageSimulators from "./components/ManageSimulators/ManageSimulators"
 import Home from './pages/Home'
 import Settings from "./pages/Settings"
 import CreateRace from "./pages/CreateRace"
+import Simulator from "./pages/Simulator"
 import PageNotFound from "./pages/PageNotFound"
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
 					<Route path="/Home" element={Home} />
 					<Route path="/Settings" element={Settings} />
 					<Route path="/CreateRace" element={CreateRace} />
+					<Route path="/Simulator" element={Simulator} />
 					<Route path="/*" element={PageNotFound} />
 				</Routes>
         	</BrowserRouter>

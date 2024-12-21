@@ -53,3 +53,19 @@ def add_simulator():
     simulator.add_simulator(data['name'], data['number'], data['ip'])
     return {"message":'Data recieved successfully!'}, 200
 
+# Read Simulator
+# Used by
+# Simulator.js
+@app.route("/readSimulator", methods=['GET'])
+def read_simulator():
+    sim_id = request.args.get('sim_id')
+    return simulator.read_simulator(sim_id), 200
+
+# Update Simulator
+# Used by
+# Simulator.js
+@app.route("/updateSimulator", methods=['POST'])
+def update_simulator():
+    data = request.json
+    simulator.update_simulator(data['sim_id'], data['updates'])
+    return "Simulator Updated!",200
