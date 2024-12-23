@@ -32,5 +32,25 @@ class Server:
                 simulator['status'] = False
         db.update_simulator_list(simulators)
 
+    # check simulator status
+    def check_simulator_status(self, sim_id):
+        simulator = db.read_simulator(sim_id)
+        response = {
+            'success': True
+        }
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((simulator['ip'], 8080))
+            simulator['status'] = True
+        except socket.error as e:
+            simulator['status'] = False
+            response['error'] = {
+                'code': 1,
+                'message': str(e)
+            }
+        db.update_simulator(sim_id, simulator)
+        print(response)
+        return response
+
 
         

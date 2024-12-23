@@ -82,6 +82,33 @@ function Simulator() {
         setConfimrDeletionModule(true)
     }
 
+    const checkSimulatorStatus = () => {
+        try {
+            setLoading(true)
+            const url = "http://127.0.0.1:8080/checkSimulatorStatus?sim_id="+sim_id
+            fetch(url, { method: "GET" })
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok")
+                }
+                return response.json()
+            })
+            .then((response) => {
+                setLoading(false)
+                if (response.error){
+                    alert(response.error.message)
+                }
+            })
+            .catch((error) => {
+                setReloadSign(true)
+                console.error("Error checking simulator status:", error.message)
+            })
+        } catch (error) {
+            setReloadSign(true)
+            console.error("Error checking simulator status:", error.message);
+        }
+    }
+
     /* Update Customer and send to database */
     const updateSimulator = async () => {
         const formData = {
@@ -188,7 +215,7 @@ function Simulator() {
                     </form>
                 </div>
                 <div className="user-options">
-                    <button className="primary-btn">
+                    <button className="primary-btn" onClick={checkSimulatorStatus}>
                         Check Status
                     </button>
                 </div>

@@ -78,3 +78,12 @@ def remove_simulator():
     data = request.json
     simulator.remove_simulator(data['sim_id'])
     return "Simulator Removed!",200
+
+# Check Simulator Status
+# Used by
+# Simulator.js
+@app.route("/checkSimulatorStatus")
+def check_simulator_status():
+    sim_id = request.args.get('sim_id')
+    return simulator.check_simulator_status(sim_id), 200
+    # return "Simulator Status Checked!",200

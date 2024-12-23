@@ -50,4 +50,8 @@ class Simulator:
     def remove_simulator(self, sim_id):
         db.remove_simulator(sim_id)
 
+    # Check simulator Status
+    def check_simulator_status(self, sim_id):
+        return server.check_simulator_status(sim_id)
+
 
