@@ -22,6 +22,10 @@ class Simulator:
     def check_simulators_status(self):
         server.check_simulators_status(self.read_simulators())
 
+    # Read active simulators
+    def read_active_simulators(self):
+        return db.read_active_simulators()
+
     ################
     ## SIMULATORS ##
     ################
@@ -34,7 +38,7 @@ class Simulator:
             'name': name,
             'number': number,
             'ip': ip,
-            'id': str('sim_'+new_id)
+            'id': str('sim_'+str(new_id))
         }
         db.add_simulator(simulator)
 

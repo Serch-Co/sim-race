@@ -98,6 +98,7 @@ function Simulator() {
                 if (response.error){
                     alert(response.error.message)
                 }
+                window.location.reload()
             })
             .catch((error) => {
                 setReloadSign(true)

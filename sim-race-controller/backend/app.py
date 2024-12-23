@@ -40,6 +40,13 @@ def check_simulators_status():
     simulator.check_simulators_status()
     return {"message":'Data recieved successfully!'}, 200
 
+# Read active Simulators
+# Used by 
+# AssingSittings.js
+@app.route('/readActiveSimulators')
+def read_active_simulators():
+    return simulator.read_active_simulators()
+
 ################
 ## SIMULATORS ##
 ################

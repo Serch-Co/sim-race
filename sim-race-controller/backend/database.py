@@ -63,6 +63,14 @@ class Database:
         # Update the list of simulators with the new changes
         self.update_simulator_list(simulator_list)
 
+    # read active simulators
+    def read_active_simulators(self):
+        active_sims = []
+        for simulator in self.read_simulators():
+            if simulator['status']:
+                active_sims.append(simulator)
+        return active_sims
+
     ################
     ## SIMULATORS ##
     ################

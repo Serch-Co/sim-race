@@ -66,6 +66,10 @@ function AddSimulator() {
 		});
 	}
 
+	const goToManageSimulators = () => {
+		navigate('/ManageSimulators')
+	}
+
 	const handleSubmit = (e) => {
 		// Prevent from loading 
 		e.preventDefault();
@@ -124,6 +128,11 @@ function AddSimulator() {
 							className="primary-btn"
 							type="submit">
 							Add Simulator
+						</button>
+						<button
+							className="primary-btn"
+							onClick={goToManageSimulators}>
+							Cancel
 						</button>
 					</div>
                 </form>
