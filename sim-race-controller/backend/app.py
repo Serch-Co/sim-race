@@ -86,4 +86,3 @@ def remove_simulator():
 def check_simulator_status():
     sim_id = request.args.get('sim_id')
     return simulator.check_simulator_status(sim_id), 200
-    # return "Simulator Status Checked!",200

@@ -49,7 +49,6 @@ class Server:
                 'message': str(e)
             }
         db.update_simulator(sim_id, simulator)
-        print(response)
         return response
 
 
