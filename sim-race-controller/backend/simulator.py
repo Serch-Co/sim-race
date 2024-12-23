@@ -46,4 +46,8 @@ class Simulator:
     def update_simulator(self, sim_id, updates):
         db.update_simulator(sim_id, updates)
 
+    # Remove simulator
+    def remove_simulator(self, sim_id):
+        db.remove_simulator(sim_id)
+
 

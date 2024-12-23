@@ -53,6 +53,15 @@ class Database:
     def update_simulator_list(self, simulator_list):
         self.db.sim_info.update_one({"name": "sim-race"}, {"$set": {"simulators": simulator_list}})
 
+    # Remove simulator from list using index
+    def remove_from_simulator_list(self, index):
+        simulator_list = self.read_simulators()
+        # Make sure not to go out of range
+        if index < len(simulator_list) and index >= 0:
+            # Remove the simulator using the index
+            del simulator_list[index]
+        # Update the list of simulators with the new changes
+        self.update_simulator_list(simulator_list)
 
     ################
     ## SIMULATORS ##
@@ -79,4 +88,13 @@ class Database:
                 new_simulators_list.append(simulator)
         self.update_simulator_list(new_simulators_list)
 
+    # Remove simulator
+    def remove_simulator(self, sim_id):
+        i = 0
+        # Loop through simulators to find the simulator
+        for simulator in self.read_simulators():
+            if simulator['id'] == sim_id:
+                # Remove simulator from the list
+                self.remove_from_simulator_list(i)
+            i += 1
 

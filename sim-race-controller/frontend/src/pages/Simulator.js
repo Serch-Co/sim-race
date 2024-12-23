@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./styles/Simulator.css";
 import { useLocation, useNavigate } from "react-router-dom";
-// import ConfirmCustomerDeletion from "../components/ManageCustomers/ConfirmCustomerDeletion"
+import ConfirmSimulatorDeletion from "../components/ManageSimulators/ConfirmSimulatorDelition";
 
 function Simulator() {
 
@@ -194,12 +194,12 @@ function Simulator() {
                 </div>
             </div>
 
-            {/* <ConfirmCustomerDeletion
+            <ConfirmSimulatorDeletion
                 trigger={confimrDeletionModule}
                 setTrigger={setConfimrDeletionModule}
-                customerEmail={customer.email}
-                customerId={customer.id}
-            /> */}
+                sim_name={simulator.name}
+                sim_id={simulator.id}
+            />
         </div>  
     );
 }

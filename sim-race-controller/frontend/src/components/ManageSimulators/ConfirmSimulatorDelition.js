@@ -1,0 +1,68 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+function ConfirmSimulatorDeletion(props) {
+  const navigate = useNavigate();
+
+  /** User has selected to confirm deletion */
+  const confirmDeletionClicked = () => {
+    deleteSimulator(props.sim_id);
+    props.setTrigger(false);
+  };
+
+  /** User has selected to cancel deletion */
+  const cancelDeletionClicked = () => {
+    props.setTrigger(false);
+  };
+
+  /**Takes in a sim_id to be sent to the backend for deletion  */
+  function deleteSimulator(simID) {
+    const formData = {
+      sim_id: simID
+    }
+    // Make a fetch request to the removeSimulator endpoint
+    fetch("http://127.0.0.1:8080/removeSimulator", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+    .then((response) => {
+      if (response.ok) {
+        return response.text(); // Return the response text if the request is successful
+      }
+      throw new Error("Network response was not ok.");
+    })
+    .then((data) => {
+      // Navigate to manage Simulators
+      navigate("../ManageSimulators")
+    })
+    .catch((error) => {
+      console.error("Error:", error); // Log any errors that occur
+    });
+  }
+
+  return props.trigger ? (
+    <div className="background">
+      <div className="main-container">
+        <div className="confirmation-module">
+          <div>Delete Simulator with name: {props.sim_name}</div>
+          <div>
+            <button onClick={confirmDeletionClicked} className="primary-btn">
+              Confirm
+            </button>
+            <button onClick={cancelDeletionClicked} className="primary-btn">
+              Cancel
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  ) : (
+    ""
+  );
+}
+
+export default ConfirmSimulatorDeletion;

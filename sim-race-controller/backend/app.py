@@ -69,3 +69,12 @@ def update_simulator():
     data = request.json
     simulator.update_simulator(data['sim_id'], data['updates'])
     return "Simulator Updated!",200
+
+# Remove Simulator
+# Used by
+# ConfirmSimulatorDeletion.js
+@app.route("/removeSimulator", methods=['POST'])
+def remove_simulator():
+    data = request.json
+    simulator.remove_simulator(data['sim_id'])
+    return "Simulator Removed!",200
