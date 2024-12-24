@@ -106,3 +106,22 @@ class Database:
                 self.remove_from_simulator_list(i)
             i += 1
 
+    ###############
+    ## CUSTOMERS ##
+    ###############
+    
+    # customer exists by id
+    def find_customer(self, customer_id):
+        for customer in self.read_db()[0]['customers']:
+            if customer['id'] == customer_id:
+                return True
+        return False
+
+    # Check valid customer ids
+    def check_valid_customer_ids(self, sittings):
+        for sitting in sittings:
+            if not self.find_customer(sitting['customer_id']):
+                print(sitting['customer_id'],'does not exist')
+                return False
+        print(sittings)
+        return True

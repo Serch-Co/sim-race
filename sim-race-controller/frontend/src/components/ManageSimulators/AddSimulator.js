@@ -54,9 +54,6 @@ function AddSimulator() {
 			if (!response.ok) {
 				return false; // Unsuccessful response
 			}
-
-			const responseData = await response.json();
-			formValues['id'] = responseData['sim_id']
 			navigate("../ManageSimulators")
 			return true
 		})

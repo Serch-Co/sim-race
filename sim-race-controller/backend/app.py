@@ -2,11 +2,13 @@ from flask import Flask, request
 from flask_cors import CORS
 from race import Race
 from simulator import Simulator
+from customer import Customer
 
 app = Flask(__name__)
 CORS(app)
 race = Race()
 simulator = Simulator()
+customer = Customer()
 
 ###############
 ## RACE LIST ##
@@ -19,7 +21,24 @@ simulator = Simulator()
 def read_active_races():
     races = race.read_active_races()
     return races
-    
+
+###############
+## CUSTOMERS ##
+###############
+
+# Check valid customer IDS
+# Used by
+# AssignSittings.js
+@app.route('/checkValidCustomerIDs', methods=['POST'])
+def check_valid_customer_ids():
+    data = request.json
+    valid_ids = customer.check_valid_customer_ids(data['sittings'])
+    if valid_ids:
+        print('valid ids')
+        return {"success": True}, 200
+    print('invalid ids')
+    return {'success': False}, 200
+
 ####################
 ## SIMULATOR LIST ##
 ####################
