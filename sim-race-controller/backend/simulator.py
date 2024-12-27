@@ -31,16 +31,17 @@ class Simulator:
     ################
 
     # add simulator
-    def add_simulator(self, name, number, ip):
+    def add_simulator(self, name, number, ip, port):
         new_id = random.randint(10**9, 10**10 - 1)
         # Simulator obj
         simulator = {
             'name': name,
             'number': number,
             'ip': ip,
+            'port': port,
             'id': str('sim_'+str(new_id))
         }
-        db.add_simulator(simulator)
+        return db.add_simulator(simulator)
 
     # Read simulator by id
     def read_simulator(self, sim_id):
@@ -48,7 +49,7 @@ class Simulator:
     
     # Update Simulator
     def update_simulator(self, sim_id, updates):
-        db.update_simulator(sim_id, updates)
+        return db.update_simulator(sim_id, updates)
 
     # Remove simulator
     def remove_simulator(self, sim_id):

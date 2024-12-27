@@ -92,6 +92,7 @@ function ManageSimulators() {
                                 <th>Name</th>
                                 <th>Number</th>
                                 <th>IP</th>
+                                <th>Port</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -105,6 +106,7 @@ function ManageSimulators() {
                                     <td>{simulator.name}</td>
                                     <td>{simulator.number}</td>
                                     <td>{simulator.ip}</td>
+                                    <td>{simulator.port}</td>
                                     <td>{simulator.status ?
                                         <div className="sim-connected">
                                             Connected

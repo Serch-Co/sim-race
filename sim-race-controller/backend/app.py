@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from race import Race
 from simulator import Simulator
@@ -76,8 +76,14 @@ def read_active_simulators():
 @app.route('/addSimulator', methods=['POST'])
 def add_simulator():
     data = request.json
-    simulator.add_simulator(data['name'], data['number'], data['ip'])
-    return {"message":'Data recieved successfully!'}, 200
+    success, message = simulator.add_simulator(data['name'], data['number'], data['ip'], data['port'])
+    return_ob = {}
+    return_ob['message'] = message
+    if success: 
+        return_ob['success'] = True
+    else:
+        return_ob['success'] = False
+    return jsonify(return_ob), 200
 
 # Read Simulator
 # Used by
@@ -93,8 +99,14 @@ def read_simulator():
 @app.route("/updateSimulator", methods=['POST'])
 def update_simulator():
     data = request.json
-    simulator.update_simulator(data['sim_id'], data['updates'])
-    return "Simulator Updated!",200
+    success, message = simulator.update_simulator(data['sim_id'], data['updates'])
+    return_ob = {}
+    return_ob['message'] = message
+    if success:
+        return_ob['success'] = True
+    else:
+        return_ob['success'] = False
+    return jsonify(return_ob),200
 
 # Remove Simulator
 # Used by

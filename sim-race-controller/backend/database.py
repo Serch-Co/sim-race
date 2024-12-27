@@ -77,7 +77,14 @@ class Database:
 
     # Add simulator
     def add_simulator(self, simulator):
+        # Check unique port for each simulator
+        for sim in self.read_simulators():
+            if sim['ip'] == simulator['ip']:
+                return False, "IP is in use"
+            if sim['port'] == simulator['port']:
+                return False, "Port is in use"
         self.add_to_simulator_list(simulator)
+        return True, "Success adding simulator"
 
     # Read simulator by id
     def read_simulator(self, sim_id):
@@ -89,12 +96,26 @@ class Database:
     def update_simulator(self, sim_id, updates):
         simulators = self.read_simulators()
         new_simulators_list = []
+        ip_list = []
+        port_list = []
         for simulator in simulators:
+            # Check for repetings ip & ports
+            # Chek which sim to update
             if sim_id == simulator["id"]:
+                if updates['ip'] in ip_list:
+                    return False, "IP in use"
+                if updates['port'] in port_list:
+                    return False, "Port in use"
                 new_simulators_list.append(updates)
+                ip_list.append(updates['ip'])
+                port_list.append(updates['port'])
             else: 
                 new_simulators_list.append(simulator)
+                ip_list.append(simulator['ip'])
+                port_list.append(simulator['port'])
+            
         self.update_simulator_list(new_simulators_list)
+        return True, "Success updating simulator"
 
     # Remove simulator
     def remove_simulator(self, sim_id):

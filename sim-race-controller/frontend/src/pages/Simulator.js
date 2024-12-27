@@ -39,8 +39,9 @@ function Simulator() {
     
     const defaultFormValues = {
         name: simulator ? simulator.name : "",
-        number: simulator ? simulator.number : "", 
+        number: simulator ? simulator.number : "",
         ip: simulator ? simulator.ip : "",
+        port: simulator ? simulator.port : "",
         status: simulator ? simulator.status : "",
         id: simulator ? simulator.id : ""
     };
@@ -125,13 +126,17 @@ function Simulator() {
         },
         body: JSON.stringify(formData),
         })
-        .then((response) => {
-            if (response.ok) {
-                navigate('../ManageSimulators')
-                return true; // Successful response
-            } else {
-                return false; // Failed response
-            }
+        .then(async(response) => {
+			if (!response.ok) {
+				return false; // Unsuccessful response
+			}
+			const responseData = await response.json()
+			if (!responseData['success']){
+				alert(responseData['message'])
+				return false
+			}
+			navigate("../ManageSimulators")
+			return true
         })
         .catch((error) => {
             console.error("Error updating customer:", error);
@@ -196,6 +201,15 @@ function Simulator() {
                                     className="input-field"
                                     placeholder={simulator.ip}
                                     aria-label="ip"
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className="input-box">
+                                Port
+                                <input
+                                    className="input-field"
+                                    placeholder={simulator.port}
+                                    aria-label="port"
                                     onChange={handleInputChange}
                                 />
                             </div>

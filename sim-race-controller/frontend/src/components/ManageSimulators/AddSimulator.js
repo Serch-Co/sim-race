@@ -9,7 +9,8 @@ function AddSimulator() {
 	const defaultFormValues = {
 		number: "",
 		name: "",
-		ip: "", 
+		ip: "",
+		port: "",
 		status: "",
 		id: "",
 	};
@@ -53,6 +54,11 @@ function AddSimulator() {
 		.then(async (response) => {
 			if (!response.ok) {
 				return false; // Unsuccessful response
+			}
+			const responseData = await response.json()
+			if (!responseData['success']){
+				alert(responseData['message'])
+				return false
 			}
 			navigate("../ManageSimulators")
 			return true
@@ -113,6 +119,16 @@ function AddSimulator() {
                                     className="input-field"
                                     placeholder="IP address"
                                     aria-label="ip"
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+                            <div className="input-box">
+                                Port
+                                <input
+                                    className="input-field"
+                                    placeholder="Port"
+                                    aria-label="port"
                                     onChange={handleInputChange}
                                     required
                                 />
