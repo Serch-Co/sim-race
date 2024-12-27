@@ -76,7 +76,7 @@ def read_active_simulators():
 @app.route('/addSimulator', methods=['POST'])
 def add_simulator():
     data = request.json
-    success, message = simulator.add_simulator(data['name'], data['number'], data['ip'], data['port'])
+    success, message = simulator.add_simulator(data['name'], data['number'], data['ip'])
     return_ob = {}
     return_ob['message'] = message
     if success: 

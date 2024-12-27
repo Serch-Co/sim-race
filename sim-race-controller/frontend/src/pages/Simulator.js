@@ -204,15 +204,6 @@ function Simulator() {
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            <div className="input-box">
-                                Port
-                                <input
-                                    className="input-field"
-                                    placeholder={simulator.port}
-                                    aria-label="port"
-                                    onChange={handleInputChange}
-                                />
-                            </div>
                             <div className="info-box">
                                 Status
                                 <div className="info-field">

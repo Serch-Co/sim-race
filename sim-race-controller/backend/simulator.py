@@ -31,14 +31,14 @@ class Simulator:
     ################
 
     # add simulator
-    def add_simulator(self, name, number, ip, port):
+    def add_simulator(self, name, number, ip):
         new_id = random.randint(10**9, 10**10 - 1)
         # Simulator obj
         simulator = {
             'name': name,
             'number': number,
             'ip': ip,
-            'port': port,
+            'port': 5001,
             'id': str('sim_'+str(new_id))
         }
         return db.add_simulator(simulator)
