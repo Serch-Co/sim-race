@@ -2,13 +2,16 @@
  * Page handles which race will be created 
  */
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function CreateRace() {
 
     const [races, setRaces] = useState([]);
     const [loading, setLoading] = useState(true)
     const [reloadSign, setReloadSign] = useState(false)
+
+    const location = useLocation()
+    const sittings = location.state
 
     useEffect(() => {
         fetchRaces();
@@ -40,8 +43,9 @@ function CreateRace() {
 
     const navigate = useNavigate();
 
-    const handleRaceClick = (e) => {
-
+    const handleRaceClick = (raceName) => {
+        let newName = raceName.split(' ').join('')
+        navigate('/Create'+newName+'Session', { state: sittings })
     }
 
 
@@ -65,7 +69,8 @@ function CreateRace() {
                     {races.map((race) => (
                         <button 
                             className="menu-item"
-                            key={race.id}>
+                            key={race.id}
+                            onClick={() => handleRaceClick(race.name)}>
                             {race.name}
                         </button>
                     ))}

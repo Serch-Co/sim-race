@@ -10,7 +10,6 @@ function AddSimulator() {
 		number: "",
 		name: "",
 		ip: "",
-		port: "",
 		status: "",
 		id: "",
 	};
@@ -119,16 +118,6 @@ function AddSimulator() {
                                     className="input-field"
                                     placeholder="IP address"
                                     aria-label="ip"
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </div>
-                            <div className="input-box">
-                                Port
-                                <input
-                                    className="input-field"
-                                    placeholder="Port"
-                                    aria-label="port"
                                     onChange={handleInputChange}
                                     required
                                 />

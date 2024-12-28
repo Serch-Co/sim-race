@@ -10,6 +10,7 @@ import Settings from "./pages/Settings"
 import CreateRace from "./pages/CreateRace"
 import Simulator from "./pages/Simulator"
 import AssingSittings from "./pages/AssingSittings"
+import CreateRFactor2Session from "./pages/CreateRFactor2Session"
 import PageNotFound from "./pages/PageNotFound"
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
 					<Route path="/CreateRace" element={CreateRace} />
 					<Route path="/Simulator" element={Simulator} />
 					<Route path="/AssingSittings" element={AssingSittings} />
+					<Route path="/CreaterFactor2Session" element={CreateRFactor2Session} />
 					<Route path="/*" element={PageNotFound} />
 				</Routes>
         	</BrowserRouter>

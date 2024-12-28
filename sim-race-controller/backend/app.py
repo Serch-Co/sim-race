@@ -124,3 +124,16 @@ def remove_simulator():
 def check_simulator_status():
     sim_id = request.args.get('sim_id')
     return simulator.check_simulator_status(sim_id), 200
+
+###################
+## RACE SESSIONS ##
+###################
+
+# Start rfacor 2 session
+# Used by
+# CreateRFactor2Session.js
+@app.route("/createRFactor2Session", methods=['POST'])
+def create_rfactor_2_session():
+    data = request.json
+    response = race.create_rfactor_2_session(data['form'], data['sittings'])
+    return response, 200
