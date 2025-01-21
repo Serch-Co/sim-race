@@ -127,7 +127,10 @@ function CustomerRaces(){
     }
 
     const updateRaces = (e, race, index) => {
-        let quantity = Number(e.target.value)
+        let quantity = 0
+        if (e.target.value < 0)
+            e.target.value = 0
+        else quantity = Number(e.target.value)
         setRaces((prevRaces) => {
             const existingRace = prevRaces.find((item) => item.id === race.id);
             if (existingRace) {
